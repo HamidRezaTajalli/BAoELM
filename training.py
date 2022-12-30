@@ -33,6 +33,9 @@ def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int):
         drop.fit(X, y)
         res = drop.predict(X)
 
+    elif elm_type.lower() == 'drelm':
+
+
 
 
 

@@ -8,12 +8,12 @@ import time
 import numpy as np 
 from sklearn.model_selection import KFold 
 from predict import predict_new,convert_to_one_hot
-from preprocess_dataset import preprocess_MNIST,preprocess_sat,preprocess_face
-from preprocess_dataset import preprocess_hill,preprocess_duke,preprocess_usps
-from basic_elm import ELM_test,ELM_train
-from preprocess_dataset import preprocess_diabet,preprocess_iris,preprocess_cifar10
-from preprocess_dataset import preprocess_Liver,preprocess_segment,preprocess_wine
-X_train_mnist,Y_train_mnist,X_test_mnist,Y_test_mnist=preprocess_MNIST()
+# from preprocess_dataset import preprocess_MNIST,preprocess_sat,preprocess_face
+# from preprocess_dataset import preprocess_hill,preprocess_duke,preprocess_usps
+# from basic_elm import ELM_test,ELM_train
+# from preprocess_dataset import preprocess_diabet,preprocess_iris,preprocess_cifar10
+# from preprocess_dataset import preprocess_Liver,preprocess_segment,preprocess_wine
+# X_train_mnist,Y_train_mnist,X_test_mnist,Y_test_mnist=preprocess_MNIST()
 #X_train_sat,Y_train_sat,X_test_sat,Y_test_sat=preprocess_sat()
 #X_train_duke,Y_train_duke,X_test_duke,Y_test_duke=preprocess_duke()
 #X_train_hill,Y_train_hill,X_test_hill,Y_test_hill=preprocess_hill()
@@ -44,7 +44,7 @@ def DRELM_main(X_train,Y_train,X_test,Y_test):
     
     return final_acc_train,final_acc_test,final_standard_div
 #%%
-acc_train_mnist,acc_test_mnist,final_standard_div_mnist= DRELM_main(X_train_mnist,Y_train_mnist,X_test_mnist,Y_test_mnist)
+# acc_train_mnist,acc_test_mnist,final_standard_div_mnist= DRELM_main(X_train_mnist,Y_train_mnist,X_test_mnist,Y_test_mnist)
 #acc_train_sat,acc_test_sat,final_standard_div_sat = DRELM_main(X_train_sat,Y_train_sat,X_test_sat,Y_test_sat)
 #acc_train_duke,acc_test_duke,final_standard_div_duke = DRELM_main(X_train_duke,Y_train_duke,X_test_duke,Y_test_duke)
 #acc_train_hill,acc_test_hill,final_standard_div_hill= DRELM_main(X_train_hill,Y_train_hill,X_test_hill,Y_test_hill)
