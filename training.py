@@ -1,10 +1,15 @@
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
+from elm_versions import DRELM_main
+from dataset_handler import mnist
+
+def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int) -> None:
 
 
-def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int):
+
     elm_dict = {'poelm': elm.ELMClassifier, 'elm-pca': pca_transformed.PCTClassifier,
                 'pca-elm': pca_initialization.PCIClassifier, 'pruned-elm': pruned_elm.PrunedClassifier,
                 'drop-elm': drop_elm.DropClassifier}
+
 
     if elm_type.lower() == 'poelm':
         poelm = elm.ELMClassifier(hidden_layer_size=hdlyr_size, activation='sigm')
@@ -34,6 +39,8 @@ def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int):
         res = drop.predict(X)
 
     elif elm_type.lower() == 'drelm':
+        DRELM_main.DRELM_main()
+
 
 
 
