@@ -5,7 +5,7 @@ Created on Fri Jul 13 11:19:42 2018
 @author: Hamid
 """
 import numpy as np 
-from basic_elm import ELM_train,ELM_test,initialize_parameters_random,sigmoid,softmax
+from elm_versions.basic_elm import ELM_train,ELM_test,initialize_parameters_random,sigmoid,softmax
 def DrElm_train(X_train,Y_train,hid_num,alpha,C,num_iteration):
     W_list=[]
     Beta_list=[]

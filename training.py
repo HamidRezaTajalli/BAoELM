@@ -1,5 +1,5 @@
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
-from elm_versions import DRELM_main
+from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
 from dataset_handler import mnist
 
 def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int) -> None:
@@ -41,6 +41,11 @@ def trainer(elm_type: str, dataset: str, trigger: str, hdlyr_size: int) -> None:
     elif elm_type.lower() == 'drelm':
         DRELM_main.DRELM_main()
 
+    elif elm_type.lower() == 'telm':
+        TELM_Main.TELM_main()
+
+    elif elm_type.lower() == 'mlelm':
+        ML_ELM_main.main_ML_ELM()
 
 
 

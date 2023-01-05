@@ -44,6 +44,7 @@ def ELM_test(X,W_new,Beta_hat):
 def sigmoid(Z):
     A = 1/(1+np.exp(-Z))
     return A
+
 #%%
 def softmax(Z):
     A = np.exp(Z) / np.sum(np.exp(Z), axis=1,keepdims = True)

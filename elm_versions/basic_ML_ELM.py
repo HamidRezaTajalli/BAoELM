@@ -4,8 +4,8 @@ Created on Sat Jul 21 14:31:09 2018
 
 @author: admin
 """
-from basic_ELM_AE import ELM_AE
-from basic_elm import sigmoid,softmax
+from elm_versions.basic_ELM_AE import ELM_AE
+from elm_versions.basic_elm import sigmoid,softmax
 import numpy as np
 
 def ML_ELM_train (X_train,Y_train,hid_num,k,C):

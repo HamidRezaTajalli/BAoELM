@@ -25,7 +25,7 @@ from elm_versions.predict import predict_new, convert_to_one_hot
 # X_train_Liver,Y_train_Liver,X_test_Liver,Y_test_Liver=preprocess_Liver()
 # X_train_segment,Y_train_segment,X_test_segment,Y_test_segment=preprocess_segment()
 # X_train_wine,Y_train_wine,X_test_wine,Y_test_wine=preprocess_wine()
-from basic_DRELM import DrElm_test, DrElm_train
+from elm_versions.basic_DRELM import DrElm_test, DrElm_train
 
 
 def DRELM_main(X_train, Y_train, X_test, Y_test):
