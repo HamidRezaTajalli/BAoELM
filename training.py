@@ -53,8 +53,8 @@ def trainer(elm_type: str, dataset: str, trigger_type: str, hdlyr_size: int) -> 
         acc = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         print(acc)
     elif elm_type.lower() == 'drop-elm':
-        drop = drop_elm.DropClassifier(hidden_layer_size=hdlyr_size, dropconnect_pr=0.5, dropout_pr=0.5,
-                                 dropconnect_bias_pctl=0.9, dropout_bias_pctl=0.9)
+        drop = drop_elm.DropClassifier(hidden_layer_size=hdlyr_size, dropconnect_pr=0.3, dropout_pr=0.3,
+                                 dropconnect_bias_pctl=None, dropout_bias_pctl=None)
         drop.fit(all_data['train']['x'], all_data['train']['y_oh'])
         out = drop.predict(all_data['test']['x'])
         acc = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
