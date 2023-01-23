@@ -307,3 +307,21 @@ def get_backdoor_test_dataset(dataset, trigger_obj, trig_ds, backdoor_label, bd_
                     2, 0, 1), backdoor_label)
             backdoored_ds.append(insert)
     return backdoored_ds
+
+
+def toonehottensor(num_classes: int, y: torch.Tensor) -> torch.Tensor:
+    y = y.type(torch.LongTensor)
+    oh_encoded = torch.nn.functional.one_hot(y, num_classes)
+    oh_encoded = torch.squeeze(oh_encoded)
+    return oh_encoded.type(torch.FloatTensor)
+
+def to_onehot(batch_size, num_classes, y, device):
+    # One hot encoding buffer that you create out of the loop and just keep reusing
+    y_onehot = torch.FloatTensor(batch_size, num_classes).to(device)
+    #y = y.type(dtype=torch.long)
+    y = torch.unsqueeze(y, dim=1)
+    # In your for loop
+    y_onehot.zero_()
+    y_onehot.scatter_(1, y, 1)
+
+    return y_onehot

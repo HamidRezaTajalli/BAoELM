@@ -1,7 +1,7 @@
 import torch.utils.data
 from torchvision import datasets, transforms
 
-from trigger import get_backdoor_test_dataset, get_backdoor_train_dataset, GenerateTrigger
+from dataset_handler.trigger import get_backdoor_test_dataset, get_backdoor_train_dataset, GenerateTrigger, toonehottensor
 
 import torch
 
@@ -242,7 +242,10 @@ def get_alldata_simple():
             # print(type(sample_batched[1]))
             # print(len(sample_batched[1]))
             # print(sample_batched[1].shape)
-            all_data[phase]['x'], all_data[phase]['y'] = torch.reshape(sample_batched[0],
-                                                                       (len(dataloaders[phase].dataset), -1)).to(
-                device), sample_batched[1].to(device)
+            all_data[phase]['x'] = torch.reshape(sample_batched[0], (len(dataloaders[phase].dataset), -1)).to(device)
+            all_data[phase]['y'] = sample_batched[1].to(device)
+            all_data[phase]['y_oh'] = toonehottensor(10, sample_batched[1]).to(device)
+
     return all_data
+
+
