@@ -37,7 +37,7 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
                                                                       [int(len(train_dataset) / (6 / 5)),
                                                                        int(len(train_dataset) / (6))])
 
-    train_dataloaders = torch.utils.data.DataLoader(dataset=train_dataset,
+    train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset,
                                                     batch_size=len(train_dataset) if batch_size is None else batch_size,
                                                     shuffle=is_shuffle, num_workers=num_workers,
                                                     drop_last=drop_last)
@@ -51,7 +51,7 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
                                                         shuffle=is_shuffle, num_workers=num_workers,
                                                         drop_last=drop_last)
 
-    return {'train': train_dataloaders,
+    return {'train': train_dataloader,
             'test': test_dataloader,
             'validation': validation_dataloader}, classes_names
 

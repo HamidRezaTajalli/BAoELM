@@ -17,8 +17,10 @@ from dataset_handler.trigger import toonehottensor
 all_data = get_alldata_simple()
 x_train = all_data['train']['x']
 y_train = all_data['train']['y']
-y_test = all_data['test']['y']
+y_train_oh = all_data['train']['y_oh'].numpy()
 x_test = all_data['test']['x']
+y_test = all_data['test']['y']
+y_test_oh = all_data['test']['y_oh'].numpy()
 
 print(type(x_train))
 print(x_train.shape)
@@ -43,8 +45,12 @@ print(y_train_2.shape)
 
 from elm_versions.DRELM_main import DRELM_main
 from elm_versions.ML_ELM_main import main_ML_ELM
+from elm_versions.TELM_Main import TELM_main
 
-acc_train_mnist, acc_test_mnist, final_standard_div_mnist = DRELM_main(x_train, y_train1, x_test, y_test1)
-# acc_test_mnist,tim,final_standard_div_mnist= main_ML_ELM(x_train,y_train,x_test,y_test)
-print(acc_train_mnist, acc_test_mnist, final_standard_div_mnist)
+# acc_train_mnist, acc_test_mnist, final_standard_div_mnist = DRELM_main(x_train, y_train_oh, x_test, y_test_oh)
+# acc_train_mnist, acc_test_mnist, final_standard_div_mnist = main_ML_ELM(x_train, y_train_oh, x_test, y_test_oh)
+acc_test_mnist, acc_train_mnist = TELM_main(x_train, y_train_oh, x_test, y_test_oh)
+print(acc_train_mnist, acc_test_mnist)
+
+
 

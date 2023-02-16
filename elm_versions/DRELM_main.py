@@ -34,15 +34,15 @@ def DRELM_main(X_train, Y_train, X_test, Y_test):
     num_iterations = 10
     n_hid = 500
     C = [10 ** 6]
-    for i in range(10):
+    for i in range(2):
         W_list, Beta_list, W_prime_list = DrElm_train(X_train, Y_train, n_hid, 0.1, C, num_iterations)
         Y_predict_test = DrElm_test(X_test, Y_test, n_hid, 0.1, W_list, Beta_list, W_prime_list)
         Y_predict_train = DrElm_test(X_train, Y_train, n_hid, 0.1, W_list, Beta_list, W_prime_list)
         accuracy_train[i] = predict_new(Y_train, Y_predict_train)
         accuracy_test[i] = predict_new(Y_test, Y_predict_test)
-    final_acc_train = np.sum(accuracy_train) / 10
-    final_acc_test = np.sum(accuracy_test) / 10
-    final_standard_div = np.sum((accuracy_test - final_acc_test) ** 2) / 10
+    final_acc_train = np.sum(accuracy_train) / 2
+    final_acc_test = np.sum(accuracy_test) / 2
+    final_standard_div = np.sum((accuracy_test - final_acc_test) ** 2) / 2
 
     return final_acc_train, final_acc_test, final_standard_div
 # %%

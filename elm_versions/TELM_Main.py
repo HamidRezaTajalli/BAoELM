@@ -42,7 +42,7 @@ def TELM_main(X_train,Y_train,X_test,Y_test):
     import time
     start = time.time()  
     for i in range(1):
-        print(i)
+        # print(i)
         Wie,Whe,Beta_new=T_ELM_Train(X_train,Y_train,n_hid,C)
         Y_predict_test=T_ELM_Test(X_test,Wie,Whe,Beta_new)
         Y_predict_train=T_ELM_Test(X_train,Wie,Whe,Beta_new)
@@ -52,7 +52,8 @@ def TELM_main(X_train,Y_train,X_test,Y_test):
     final_acc_train= np.sum(accuracy_train)/1
     final_standard_div = np.sum((accuracy_test-final_acc_test)**2)/1
     stop = time.time()    
-    return final_acc_test,final_acc_train,stop-start,final_standard_div
+    # return final_acc_test,final_acc_train,stop-start,final_standard_div
+    return final_acc_test, final_acc_train
 
 
 
