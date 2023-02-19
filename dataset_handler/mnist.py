@@ -33,9 +33,9 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
     train_dataset = datasets.MNIST(root='./data/MNIST/', train=True, transform=transforms_dict['train'], download=True)
     test_dataset = datasets.MNIST(root='./data/MNIST/', train=False, transform=transforms_dict['test'], download=True)
 
-    train_dataset, validation_dataset = torch.utils.data.random_split(train_dataset,
-                                                                      [int(len(train_dataset) / (6 / 5)),
-                                                                       int(len(train_dataset) / (6))])
+    # train_dataset, validation_dataset = torch.utils.data.random_split(train_dataset,
+    #                                                                   [int(len(train_dataset) / (6 / 5)),
+    #                                                                    int(len(train_dataset) / (6))])
 
     train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset,
                                                     batch_size=len(train_dataset) if batch_size is None else batch_size,
@@ -46,14 +46,13 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
                                                   batch_size=len(test_dataset) if batch_size is None else batch_size,
                                                   shuffle=is_shuffle, num_workers=num_workers, drop_last=drop_last)
 
-    validation_dataloader = torch.utils.data.DataLoader(dataset=validation_dataset, batch_size=len(
-        validation_dataset) if batch_size is None else batch_size,
-                                                        shuffle=is_shuffle, num_workers=num_workers,
-                                                        drop_last=drop_last)
+    # validation_dataloader = torch.utils.data.DataLoader(dataset=validation_dataset, batch_size=len(
+    #     validation_dataset) if batch_size is None else batch_size,
+    #                                                     shuffle=is_shuffle, num_workers=num_workers,
+    #                                                     drop_last=drop_last)
 
     return {'train': train_dataloader,
-            'test': test_dataloader,
-            'validation': validation_dataloader}, classes_names
+            'test': test_dataloader}, classes_names
 
 
 def get_dataloaders_lbflip(batch_size, train_ds_num, drop_last, is_shuffle, flip_label, target_label):
@@ -175,7 +174,7 @@ def get_dataloaders_lbflip(batch_size, train_ds_num, drop_last, is_shuffle, flip
             'backdoor_test': backdoor_test_dataloader}, classes_names
 
 
-def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, train_samples_percentage):
+def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, train_samples_percentage, trigger_size=(8, 8)):
     drop_last = drop_last
     batch_size = batch_size
     is_shuffle = is_shuffle
@@ -196,7 +195,7 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
     train_dataset = datasets.MNIST(root='./data/MNIST/', train=True, transform=transforms_dict['train'], download=True)
     test_dataset = datasets.MNIST(root='./data/MNIST/', train=False, transform=transforms_dict['test'], download=True)
 
-    trigger_obj = GenerateTrigger((8, 8), pos_label='upper-mid', dataset='mnist', shape='square')
+    trigger_obj = GenerateTrigger(trigger_size, pos_label='upper-mid', dataset='mnist', shape='square')
 
     bd_train_dataset = get_backdoor_train_dataset(train_dataset, trigger_obj, trig_ds='mnist',
                                                   samples_percentage=train_samples_percentage,
@@ -204,25 +203,25 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
 
     backdoor_test_dataset = get_backdoor_test_dataset(test_dataset, trigger_obj, trig_ds='mnist',
                                                       backdoor_label=target_label)
-    train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
+    train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=len(train_dataset) if batch_size is None else batch_size,
                                                    shuffle=is_shuffle, num_workers=num_workers,
                                                    drop_last=drop_last)
-    bd_train_dataloader = torch.utils.data.DataLoader(dataset=bd_train_dataset, batch_size=batch_size,
+    bd_train_dataloader = torch.utils.data.DataLoader(dataset=bd_train_dataset, batch_size=len(bd_train_dataset) if batch_size is None else batch_size,
                                                       shuffle=is_shuffle, num_workers=num_workers,
                                                       drop_last=drop_last)
 
-    test_dataloader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
+    test_dataloader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=len(test_dataset) if batch_size is None else batch_size,
                                                   shuffle=is_shuffle, num_workers=num_workers,
                                                   drop_last=drop_last)
 
-    backdoor_test_dataloader = torch.utils.data.DataLoader(dataset=backdoor_test_dataset, batch_size=batch_size,
+    backdoor_test_dataloader = torch.utils.data.DataLoader(dataset=backdoor_test_dataset, batch_size=len(backdoor_test_dataset) if batch_size is None else batch_size,
                                                            shuffle=is_shuffle, num_workers=num_workers,
                                                            drop_last=drop_last)
 
     return {'train': train_dataloader,
             'bd_train': bd_train_dataloader,
             'test': test_dataloader,
-            'backdoor_test': backdoor_test_dataloader}, classes_names
+            'bd_test': backdoor_test_dataloader}, classes_names
 
 
 def get_alldata_simple():
@@ -233,6 +232,30 @@ def get_alldata_simple():
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dataloaders, classes_names = get_dataloaders_simple(batch_size=None, drop_last=True, is_shuffle=False)
+    all_data = {item: {} for item in dataloaders.keys()}
+    for phase in all_data.keys():
+        for i_batch, sample_batched in enumerate(dataloaders[phase]):
+            # print(type(sample_batched[0]))
+            # print(len(sample_batched[0]))
+            # print(sample_batched[0].shape)
+            # print(type(sample_batched[1]))
+            # print(len(sample_batched[1]))
+            # print(sample_batched[1].shape)
+            all_data[phase]['x'] = torch.reshape(sample_batched[0], (len(dataloaders[phase].dataset), -1)).to(device)
+            all_data[phase]['y'] = sample_batched[1].to(device)
+            all_data[phase]['y_oh'] = toonehottensor(10, sample_batched[1]).to(device)
+
+    return all_data
+
+
+def get_alldata_backdoor(target_label, train_samples_percentage, trigger_size):
+    '''
+    a method which calls the dataloaders, and iterate through them,
+         flattens the inputs and returns all dataset in just one batch of data.
+    '''
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    dataloaders, classes_names = get_dataloaders_backdoor(batch_size=None, drop_last=True, is_shuffle=False, target_label=target_label, train_samples_percentage=train_samples_percentage, trigger_size=trigger_size)
     all_data = {item: {} for item in dataloaders.keys()}
     for phase in all_data.keys():
         for i_batch, sample_batched in enumerate(dataloaders[phase]):

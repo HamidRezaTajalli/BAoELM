@@ -32,42 +32,31 @@ from elm_versions.basic_ML_ELM import ML_ELM_train, ML_ELM_test
 # X_train_Liver,Y_train_Liver,X_test_Liver,Y_test_Liver=preprocess_Liver()
 # X_train_segment,Y_train_segment,X_test_segment,Y_test_segment=preprocess_segment()
 # X_train_wine,Y_train_wine,X_test_wine,Y_test_wine=preprocess_wine()
-def main_ML_ELM(X_train, Y_train, X_test, Y_test):
-    #    hid_num1=[1]
-    #    hid_num=[hid_num1]
-    #    C1=[10**6,10**6]
-    #    C=[C1]
-    #    acc=np.zeros((5))
+def main_ML_ELM(X_train, Y_train, X_test, Y_test, hidden_layers: list = None):
+    hddn_lyrs = [200, 200, 700] if hidden_layers is None else hidden_layers
     accuracy = np.zeros((1))
-    #    pred_chain=np.zeros((len(C)))
-    #    for k in range(len(hid_num)):
-    #        print(k)
-    #        for kk in range(len(C)):
-    #            print(kk)
-    #            kf = KFold(n_splits=5)
-    #            kf_i=0
-    #            for train_index, test_index in kf.split(X_train_mnist):
-    #                Train_X, Test_X = X_train_mnist[train_index], X_train_mnist[test_index]
-    #                Train_Y, Test_Y = y_train_mnist[train_index], y_train_mnist[test_index]
-    #                Train_Y=convert_to_one_hot(Train_Y,10).T
-    #                Test_Y=convert_to_one_hot(Test_Y,10).T
-    #                betahat_1,betahat_3,Y=ML_ELM_train (Train_X,Train_Y,hid_num[k],10,C[kk])
-    #                Y_predict= ML_ELM_test(Test_X,Test_Y,betahat_1,betahat_3,10)
-    #                acc[kf_i]=predict_new(Test_Y,Y_predict)
-    #                kf_i=kf_i+1
-    #            pred_chain[kk]=np.sum(acc)/5
-    n_hid = [200, 200, 700]
+    n_hid = hddn_lyrs
     CC = [10 ** 6, 10 ** 6, 10 ** 6]
-    start = time.time()
+    betahat_1, betahat_2, betahat_3, betahat_4 = None, None, None, None
+    elapsed_time = None
     for i in range(1):
+        start_time = time.time()
         betahat_1, betahat_2, betahat_3, betahat_4, Y = ML_ELM_train(X_train, Y_train, n_hid, 10, CC)
+        elapsed_time = time.time() - start_time
         Y_predict = ML_ELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4, 10)
         accuracy[i] = predict_new(Y_test, Y_predict)
     final_acc = np.sum(accuracy) / 1
     final_standard_div = np.sum((accuracy - final_acc) ** 2) / 1
-    stop = time.time()
     # return final_acc, stop - start, final_standard_div
-    return final_acc
+    return final_acc, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time
+
+def ML_ELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4):
+    Y_predict = ML_ELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4, 10)
+    accuracy = predict_new(Y_test, Y_predict)
+
+    return accuracy
+
+
 # %%
 
 # result=open("result_ML_ELM.txt","w")

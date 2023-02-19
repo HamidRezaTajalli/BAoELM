@@ -28,14 +28,20 @@ from elm_versions.predict import predict_new, convert_to_one_hot
 from elm_versions.basic_DRELM import DrElm_test, DrElm_train
 
 
-def DRELM_main(X_train, Y_train, X_test, Y_test):
+
+
+def DRELM_main(X_train, Y_train, X_test, Y_test, hidden_size=500):
     accuracy_train = np.zeros((10))
     accuracy_test = np.zeros((10))
     num_iterations = 10
-    n_hid = 500
+    n_hid = hidden_size
     C = [10 ** 6]
+    W_list, Beta_list, W_prime_list = None, None, None
+    elapsed_time = None
     for i in range(2):
+        start_time = time.time()
         W_list, Beta_list, W_prime_list = DrElm_train(X_train, Y_train, n_hid, 0.1, C, num_iterations)
+        elapsed_time = time.time() - start_time
         Y_predict_test = DrElm_test(X_test, Y_test, n_hid, 0.1, W_list, Beta_list, W_prime_list)
         Y_predict_train = DrElm_test(X_train, Y_train, n_hid, 0.1, W_list, Beta_list, W_prime_list)
         accuracy_train[i] = predict_new(Y_train, Y_predict_train)
@@ -44,7 +50,17 @@ def DRELM_main(X_train, Y_train, X_test, Y_test):
     final_acc_test = np.sum(accuracy_test) / 2
     final_standard_div = np.sum((accuracy_test - final_acc_test) ** 2) / 2
 
-    return final_acc_train, final_acc_test, final_standard_div
+    return final_acc_train, final_acc_test, final_standard_div, (W_list, Beta_list, W_prime_list), elapsed_time
+
+def DRELM_test(X_test, Y_test, n_hid, W_list, Beta_list, W_prime_list):
+    Y_predict_test = DrElm_test(X_test, Y_test, n_hid, 0.1, W_list, Beta_list, W_prime_list)
+    accuracy_test = predict_new(Y_test, Y_predict_test)
+    return accuracy_test
+
+
+
+
+
 # %%
 # acc_train_mnist,acc_test_mnist,final_standard_div_mnist= DRELM_main(X_train_mnist,Y_train_mnist,X_test_mnist,Y_test_mnist)
 # acc_train_sat,acc_test_sat,final_standard_div_sat = DRELM_main(X_train_sat,Y_train_sat,X_test_sat,Y_test_sat)
