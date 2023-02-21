@@ -11,7 +11,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 
-def TELM_main(X_train,Y_train,X_test,Y_test, hidden_size=200):
+def TELM_main(X_train,Y_train,X_test,Y_test, hidden_size):
     accuracy_test=np.zeros((1))
     accuracy_train=np.zeros((1))
     n_hid=hidden_size#L_M[np.argmax(pred_chain)]

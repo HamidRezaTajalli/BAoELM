@@ -30,7 +30,7 @@ from elm_versions.basic_DRELM import DrElm_test, DrElm_train
 
 
 
-def DRELM_main(X_train, Y_train, X_test, Y_test, hidden_size=500):
+def DRELM_main(X_train, Y_train, X_test, Y_test, hidden_size):
     accuracy_train = np.zeros((10))
     accuracy_test = np.zeros((10))
     num_iterations = 10

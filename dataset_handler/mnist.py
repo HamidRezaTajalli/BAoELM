@@ -195,7 +195,7 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
     train_dataset = datasets.MNIST(root='./data/MNIST/', train=True, transform=transforms_dict['train'], download=True)
     test_dataset = datasets.MNIST(root='./data/MNIST/', train=False, transform=transforms_dict['test'], download=True)
 
-    trigger_obj = GenerateTrigger(trigger_size, pos_label='upper-mid', dataset='mnist', shape='square')
+    trigger_obj = GenerateTrigger(trigger_size, pos_label='upper-left', dataset='mnist', shape='square')
 
     bd_train_dataset = get_backdoor_train_dataset(train_dataset, trigger_obj, trig_ds='mnist',
                                                   samples_percentage=train_samples_percentage,
@@ -203,9 +203,9 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
 
     backdoor_test_dataset = get_backdoor_test_dataset(test_dataset, trigger_obj, trig_ds='mnist',
                                                       backdoor_label=target_label)
-    train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=len(train_dataset) if batch_size is None else batch_size,
-                                                   shuffle=is_shuffle, num_workers=num_workers,
-                                                   drop_last=drop_last)
+    # train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=len(train_dataset) if batch_size is None else batch_size,
+    #                                                shuffle=is_shuffle, num_workers=num_workers,
+    #                                                drop_last=drop_last)
     bd_train_dataloader = torch.utils.data.DataLoader(dataset=bd_train_dataset, batch_size=len(bd_train_dataset) if batch_size is None else batch_size,
                                                       shuffle=is_shuffle, num_workers=num_workers,
                                                       drop_last=drop_last)
@@ -218,8 +218,7 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
                                                            shuffle=is_shuffle, num_workers=num_workers,
                                                            drop_last=drop_last)
 
-    return {'train': train_dataloader,
-            'bd_train': bd_train_dataloader,
+    return {'bd_train': bd_train_dataloader,
             'test': test_dataloader,
             'bd_test': backdoor_test_dataloader}, classes_names
 

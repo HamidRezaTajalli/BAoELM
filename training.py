@@ -27,7 +27,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
     ds_dict = {'mnist': mnist}
 
-    trigger_obj = trigger.GenerateTrigger((4, 4), pos_label='upper-left', dataset=dataset, shape='square')
     all_data = ds_dict[dataset].get_alldata_simple()
 
     if elm_type.lower() == 'poelm':
@@ -97,7 +96,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         print(test_accuracy)
 
     elif elm_type.lower() == 'mlelm':
-        test_accuracy, elapsed_time = ML_ELM_main.main_ML_ELM(all_data['train']['x'],
+        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(all_data['train']['x'],
                                                               all_data['train']['y_oh'].numpy(),
                                                               all_data['test']['x'],
                                                               all_data['test']['y_oh'].numpy(),
@@ -123,3 +122,4 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             [exp_num, elm_type, dataset, hdlyr_size, test_accuracy, elapsed_time])
 
     gc.collect()
+
