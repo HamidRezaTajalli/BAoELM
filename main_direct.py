@@ -1,5 +1,23 @@
 import training
 from pathlib import Path
+import gc
 
 
-training.trainer(exp_num=1, saving_path=Path(), elm_type='mlelm', dataset='mnist', hdlyr_size=[200, 200, 700])
+
+
+saving_path = Path()
+n_of_experiments = 2
+elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'pruned-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
+dataset_list = ['mnist']
+hdlyr_size_list = [500, 700, 1000, 1500, 2000]
+
+
+for dataset in dataset_list:
+    for elm_type in elm_type_list:
+        for hdlyr_size in hdlyr_size_list:
+            for exp_num in range(n_of_experiments):
+                training.trainer(exp_num=exp_num, saving_path=saving_path, elm_type=elm_type, dataset=dataset, hdlyr_size=hdlyr_size)
+                gc.collect()
+
+
+

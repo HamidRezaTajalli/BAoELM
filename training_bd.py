@@ -12,14 +12,14 @@ import gc
 
 
 def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, trigger_type: str, target_label: int,
-            epsilon, hdlyr_size: int or list, trigger_size:
+            epsilon, hdlyr_size: int, trigger_size:
         tuple[int, int] = (4, 4)) -> None:
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     test_accuracy, bd_test_accuracy = -1, -1  # default values
     elapsed_time = -1
 
-    csv_path = saving_path.joinpath('results.csv')
+    csv_path = saving_path.joinpath('results_bd.csv')
     if not csv_path.exists():
         csv_path.touch()
         with open(file=csv_path, mode='w') as file:
@@ -43,7 +43,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         bd_out = poelm.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
 
-
     elif elm_type.lower() == 'elm-pca':
         pct = pca_transformed.PCTClassifier(hidden_layer_size=hdlyr_size,
                                             retained=None)  # retained can be (0, 1) percent variation or an integer number of PCA modes to retain
@@ -54,7 +53,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = pct.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
-
 
     elif elm_type.lower() == 'pca-elm':
         pci = pca_initialization.PCIClassifier(
@@ -67,7 +65,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         bd_out = pci.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
 
-
     elif elm_type.lower() == 'pruned-elm':
         prune = pruned_elm.PrunedClassifier(hidden_layer_size=hdlyr_size)
         start_time = time.time()
@@ -77,7 +74,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = prune.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
-
 
     elif elm_type.lower() == 'drop-elm':
         drop = drop_elm.DropClassifier(hidden_layer_size=hdlyr_size, dropconnect_pr=0.3, dropout_pr=0.3,
@@ -89,7 +85,6 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = drop.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
-
 
     elif elm_type.lower() == 'drelm':
         acc_train, test_accuracy, final_standard_div, (
@@ -122,10 +117,10 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             all_data['bd_train']['y_oh'].numpy(),
             all_data['test']['x'],
             all_data['test']['y_oh'].numpy(),
-            hidden_layers=hdlyr_size)
-        bd_test_accuracy = ML_ELM_main.ML_ELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
-                                                   betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
-                                                   betahat_4=betahat_4)
+            hidden_layer=hdlyr_size)
+        bd_test_accuracy = ML_ELM_main.MLELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+                                                  betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
+                                                  betahat_4=betahat_4)
 
     elif elm_type.lower() == 'cnn-elm':
         dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,

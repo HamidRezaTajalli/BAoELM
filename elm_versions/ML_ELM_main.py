@@ -32,8 +32,9 @@ from elm_versions.basic_ML_ELM import ML_ELM_train, ML_ELM_test
 # X_train_Liver,Y_train_Liver,X_test_Liver,Y_test_Liver=preprocess_Liver()
 # X_train_segment,Y_train_segment,X_test_segment,Y_test_segment=preprocess_segment()
 # X_train_wine,Y_train_wine,X_test_wine,Y_test_wine=preprocess_wine()
-def main_ML_ELM(X_train, Y_train, X_test, Y_test, hidden_layers: list = None):
-    hddn_lyrs = [200, 200, 700] if hidden_layers is None else hidden_layers
+def main_ML_ELM(X_train, Y_train, X_test, Y_test, hidden_layer: int = 700):
+
+    hddn_lyrs = [200, 200].append(hidden_layer)
     accuracy = np.zeros((1))
     n_hid = hddn_lyrs
     CC = [10 ** 6, 10 ** 6, 10 ** 6]
@@ -50,7 +51,7 @@ def main_ML_ELM(X_train, Y_train, X_test, Y_test, hidden_layers: list = None):
     # return final_acc, stop - start, final_standard_div
     return final_acc, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time
 
-def ML_ELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4):
+def MLELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4):
     Y_predict = ML_ELM_test(X_test, Y_test, betahat_1, betahat_2, betahat_3, betahat_4, 10)
     accuracy = predict_new(Y_test, Y_predict)
 

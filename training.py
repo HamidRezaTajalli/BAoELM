@@ -11,13 +11,13 @@ import time
 import gc
 
 
-def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, hdlyr_size: int or list) -> None:
+def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, hdlyr_size: int) -> None:
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     test_accuracy = -1  # default values
     elapsed_time = -1
 
-    csv_path = saving_path.joinpath('results.csv')
+    csv_path = saving_path.joinpath('results_benign.csv')
     if not csv_path.exists():
         csv_path.touch()
         with open(file=csv_path, mode='w') as file:
@@ -78,11 +78,11 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
     elif elm_type.lower() == 'drelm':
         acc_train, test_accuracy, final_standard_div, (
-        W_list, Beta_list, W_prime_list), elapsed_time = DRELM_main.DRELM_main(all_data['train']['x'],
-                                                                               all_data['train']['y_oh'].numpy(),
-                                                                               all_data['test']['x'],
-                                                                               all_data['test']['y_oh'].numpy(),
-                                                                               hidden_size=hdlyr_size)
+            W_list, Beta_list, W_prime_list), elapsed_time = DRELM_main.DRELM_main(all_data['train']['x'],
+                                                                                   all_data['train']['y_oh'].numpy(),
+                                                                                   all_data['test']['x'],
+                                                                                   all_data['test']['y_oh'].numpy(),
+                                                                                   hidden_size=hdlyr_size)
         print(test_accuracy)
 
     elif elm_type.lower() == 'telm':
@@ -96,11 +96,12 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         print(test_accuracy)
 
     elif elm_type.lower() == 'mlelm':
-        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(all_data['train']['x'],
-                                                              all_data['train']['y_oh'].numpy(),
-                                                              all_data['test']['x'],
-                                                              all_data['test']['y_oh'].numpy(),
-                                                              hidden_layers=hdlyr_size)
+        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(
+            all_data['train']['x'],
+            all_data['train']['y_oh'].numpy(),
+            all_data['test']['x'],
+            all_data['test']['y_oh'].numpy(),
+            hidden_layer=hdlyr_size)
         print(test_accuracy)
 
     elif elm_type.lower() == 'cnn-elm':
@@ -122,4 +123,3 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             [exp_num, elm_type, dataset, hdlyr_size, test_accuracy, elapsed_time])
 
     gc.collect()
-
