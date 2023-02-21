@@ -11,10 +11,10 @@ import time
 import gc
 
 
-def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, hdlyr_size: int or list) -> None:
+def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, trigger_type: str, hdlyr_size: int or list) -> None:
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-    test_accuracy = -1  # default values
+    test_accuracy, bd_test_accuracy = -1, -1 # default values
     elapsed_time = -1
 
     csv_path = saving_path.joinpath('results.csv')
@@ -23,7 +23,9 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         with open(file=csv_path, mode='w') as file:
             csv_writer = csv.writer(file)
             csv_writer.writerow(['EXPERIMENT_NUMBER', 'ELM_TYPE',
-                                 'DATASET', 'HIDDEN_LYR_SIZE', 'TEST_ACCURACY', 'TIME_ELAPSED'])
+                                 'DATASET', 'HIDDEN_LYR_SIZE', 'TRIGGER_TYPE', 'TEST_ACCURACY', 'BD_TEST_ACCURACY',
+                                 'TIME_ELAPSED'])
+
 
     ds_dict = {'mnist': mnist}
 
@@ -58,7 +60,11 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         out = pci.predict(all_data['test']['x'])
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         print(test_accuracy)
-
+    # TODO: Implement the rest of the elm types: dreelm, telm, ml-elm and also cnn-elm. what I should do: I should check the
+    # TODO: the dataset handlers to fit each of these functions. I should also bring cnn-elm directory and put it down here. also add hidder-layer option. save path option with csv file which contains all settings and results
+    # TODO: I have also check the availabitli of using cuda in each these modes. if the cuda can be used then use cuda else cpu.
+    # TODO: don't forget to save the elapsed time!!
+    # TODO: doon't forget to gc.collect!!
     elif elm_type.lower() == 'pruned-elm':
         prune = pruned_elm.PrunedClassifier(hidden_layer_size=hdlyr_size)
         start_time = time.time()
@@ -78,30 +84,27 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         print(test_accuracy)
 
     elif elm_type.lower() == 'drelm':
-        acc_train, test_accuracy, final_standard_div, (
-        W_list, Beta_list, W_prime_list), elapsed_time = DRELM_main.DRELM_main(all_data['train']['x'],
-                                                                               all_data['train']['y_oh'].numpy(),
-                                                                               all_data['test']['x'],
-                                                                               all_data['test']['y_oh'].numpy(),
-                                                                               hidden_size=hdlyr_size)
+        acc_train, test_accuracy, final_standard_div, (W_list, Beta_list, W_prime_list), elapsed_time = DRELM_main.DRELM_main(all_data['train']['x'],
+                                                                        all_data['train']['y_oh'].numpy(),
+                                                                        all_data['test']['x'],
+                                                                        all_data['test']['y_oh'].numpy(),
+                                                                        hidden_size=hdlyr_size)
         print(test_accuracy)
 
     elif elm_type.lower() == 'telm':
         test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time = TELM_Main.TELM_main(all_data['train']['x'],
-                                                                                           all_data['train'][
-                                                                                               'y_oh'].numpy(),
-                                                                                           all_data['test']['x'],
-                                                                                           all_data['test'][
-                                                                                               'y_oh'].numpy(),
-                                                                                           hidden_size=hdlyr_size)
+                                                  all_data['train']['y_oh'].numpy(),
+                                                  all_data['test']['x'],
+                                                  all_data['test']['y_oh'].numpy(),
+                                                  hidden_size=hdlyr_size)
         print(test_accuracy)
 
     elif elm_type.lower() == 'mlelm':
         test_accuracy, elapsed_time = ML_ELM_main.main_ML_ELM(all_data['train']['x'],
-                                                              all_data['train']['y_oh'].numpy(),
-                                                              all_data['test']['x'],
-                                                              all_data['test']['y_oh'].numpy(),
-                                                              hidden_layers=hdlyr_size)
+                                           all_data['train']['y_oh'].numpy(),
+                                           all_data['test']['x'],
+                                           all_data['test']['y_oh'].numpy(),
+                                           hidden_layers=hdlyr_size)
         print(test_accuracy)
 
     elif elm_type.lower() == 'cnn-elm':
@@ -117,9 +120,14 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = main_CNNELM.test(model, dataloaders['test']).item()
         print(test_accuracy)
 
+
+
     with open(file=csv_path, mode='a') as file:
         csv_writer = csv.writer(file)
         csv_writer.writerow(
-            [exp_num, elm_type, dataset, hdlyr_size, test_accuracy, elapsed_time])
+            [exp_num, elm_type, dataset, hdlyr_size, trigger_type, test_accuracy, bd_test_accuracy, elapsed_time])
 
     gc.collect()
+
+
+
