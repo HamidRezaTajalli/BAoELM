@@ -12,7 +12,7 @@ import gc
 
 
 def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, trigger_type: str, target_label: int,
-            epsilon, hdlyr_size: int, trigger_size:
+            poison_percentage, hdlyr_size: int, trigger_size:
         tuple[int, int] = (4, 4)) -> None:
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -25,12 +25,14 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         with open(file=csv_path, mode='w') as file:
             csv_writer = csv.writer(file)
             csv_writer.writerow(['EXPERIMENT_NUMBER', 'ELM_TYPE',
-                                 'DATASET', 'HIDDEN_LYR_SIZE', 'TRIGGER_TYPE', 'TEST_ACCURACY', 'BD_TEST_ACCURACY',
+                                 'DATASET', 'HIDDEN_LYR_SIZE', 'TRIGGER_TYPE', 'TARGET_LABEL', 'POISON_PERCENTAGE',
+                                 'TRIGGER_SIZE', 'TEST_ACCURACY', 'BD_TEST_ACCURACY',
                                  'TIME_ELAPSED'])
 
     ds_dict = {'mnist': mnist}
 
-    all_data = ds_dict[dataset].get_alldata_backdoor(target_label=target_label, train_samples_percentage=epsilon,
+    all_data = ds_dict[dataset].get_alldata_backdoor(target_label=target_label,
+                                                     train_samples_percentage=poison_percentage,
                                                      trigger_size=trigger_size)
 
     if elm_type.lower() == 'poelm':
@@ -126,7 +128,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,
                                                                                is_shuffle=True,
                                                                                target_label=target_label,
-                                                                               train_samples_percentage=epsilon,
+                                                                               train_samples_percentage=poison_percentage,
                                                                                trigger_size=trigger_size)
 
         model = main_CNNELM.Net()
@@ -142,6 +144,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     with open(file=csv_path, mode='a') as file:
         csv_writer = csv.writer(file)
         csv_writer.writerow(
-            [exp_num, elm_type, dataset, hdlyr_size, trigger_type, test_accuracy, bd_test_accuracy, elapsed_time])
+            [exp_num, elm_type, dataset, hdlyr_size, trigger_type, target_label, poison_percentage, trigger_size,
+             test_accuracy, bd_test_accuracy, elapsed_time])
 
     gc.collect()
