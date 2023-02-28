@@ -1,4 +1,3 @@
-import numpy as np
 import torch.utils.data
 from torchvision import datasets, transforms
 
@@ -20,23 +19,14 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     num_workers = 2 if device.type == 'cuda' else 0
 
-    classes_names = ('Plane', 'Car', 'Bird', 'Cat',
-                     'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck')
-    transforms_dict = {
-        'train': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]),
-        'test': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
-    }
-    train_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=True, transform=transforms_dict['train'],
-                                     download=True)
-    test_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=False, transform=transforms_dict['test'],
-                                    download=True)
-    # validation_dataset, test_dataset = torch.utils.data.random_split(test_dataset,
-    #                                                                  [int(len(test_dataset) / (2)),
-    #                                                                   int(len(test_dataset) / (2))])
+    classes_names = ('T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                     'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot')
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (0.5,))])
+
+    train_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=True, transform=transform)
+    test_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=False, transform=transform)
+
 
 
     train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset,
@@ -48,7 +38,8 @@ def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
                                                   batch_size=len(test_dataset) if batch_size is None else batch_size,
                                                   shuffle=is_shuffle, num_workers=num_workers, drop_last=drop_last)
 
-    # validation_dataloader = torch.utils.data.DataLoader(dataset=validation_dataset, batch_size=len(validation_dataset),
+    # validation_dataloader = torch.utils.data.DataLoader(dataset=validation_dataset, batch_size=len(
+    #     validation_dataset) if batch_size is None else batch_size,
     #                                                     shuffle=is_shuffle, num_workers=num_workers,
     #                                                     drop_last=drop_last)
 
@@ -63,22 +54,14 @@ def get_dataloaders_lbflip(batch_size, train_ds_num, drop_last, is_shuffle, flip
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     num_workers = 2 if device.type == 'cuda' else 0
 
-    classes_names = ('Plane', 'Car', 'Bird', 'Cat',
-                     'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck')
+    classes_names = ('T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                     'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot')
 
-    transforms_dict = {
-        'train': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]),
-        'test': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
-    }
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (0.5,))])
 
-    train_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=True, transform=transforms_dict['train'],
-                                     download=True)
-    test_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=False, transform=transforms_dict['test'],
-                                    download=True)
+    train_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=True, transform=transform)
+    test_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=False, transform=transform)
 
     target_indices = [num for num, item in enumerate(train_dataset.targets) if item == flip_label]
     rest_indices = [num for num, item in enumerate(train_dataset.targets) if item != flip_label]
@@ -99,18 +82,21 @@ def get_dataloaders_lbflip(batch_size, train_ds_num, drop_last, is_shuffle, flip
     test_dataset.data = test_dataset.data[rest_indices]
     test_dataset.targets = np.array(test_dataset.targets)[rest_indices].tolist()
 
-    validation_dataset, test_dataset = torch.utils.data.random_split(test_dataset,
-                                                                     [int(len(test_dataset) / (2 / 1)),
-                                                                      int(len(test_dataset) / (2 / 1))])
+    train_dataset, validation_dataset = torch.utils.data.random_split(train_dataset,
+                                                                      [int(len(train_dataset) / (6 / 5)),
+                                                                       int(len(train_dataset) / (6))])
 
     chunk_len = len(train_dataset) // train_ds_num
     remnant = len(train_dataset) % train_ds_num
     chunks = [chunk_len for item in range(train_ds_num)]
     if remnant > 0:
         chunks.append(remnant)
-
     train_datasets = torch.utils.data.random_split(train_dataset,
                                                    chunks)
+
+    # train_datasets = torch.utils.data.random_split(train_dataset,
+    #                                                 [int(len(train_dataset) / (8 / 1)),
+    #                                                 int(len(train_dataset) / (8 / 7))])
 
     backdoor_train_dataset = [item for item in train_datasets[0]]
     backdoor_train_dataset.extend(target_dataset)
@@ -181,31 +167,24 @@ def get_dataloaders_backdoor(batch_size, drop_last, is_shuffle, target_label, tr
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     num_workers = 2 if device.type == 'cuda' else 0
 
-    classes_names = ('Plane', 'Car', 'Bird', 'Cat',
-                     'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck')
+    classes_names = ('T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                     'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot')
 
-    transforms_dict = {
-        'train': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))]),
-        'test': transforms.Compose(
-            [transforms.ToTensor(),
-             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
-    }
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (0.5,))])
 
-    train_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=True, transform=transforms_dict['train'],
-                                     download=True)
-    test_dataset = datasets.CIFAR10(root='./data/CIFAR10/', train=False, transform=transforms_dict['test'],
-                                    download=True)
+    train_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=True, transform=transform)
+    test_dataset = datasets.FashionMNIST('./data/FMNIST/', download=True, train=False, transform=transform)
 
 
-    trigger_obj = GenerateTrigger(trigger_size, pos_label='upper-left', dataset='cifar10', shape='square')
 
-    bd_train_dataset = get_backdoor_train_dataset(train_dataset, trigger_obj, trig_ds='cifar10',
+    trigger_obj = GenerateTrigger(trigger_size, pos_label='upper-left', dataset='fmnist', shape='square')
+
+    bd_train_dataset = get_backdoor_train_dataset(train_dataset, trigger_obj, trig_ds='fmnist',
                                                   samples_percentage=train_samples_percentage,
                                                   backdoor_label=target_label)
 
-    backdoor_test_dataset = get_backdoor_test_dataset(test_dataset, trigger_obj, trig_ds='cifar10',
+    backdoor_test_dataset = get_backdoor_test_dataset(test_dataset, trigger_obj, trig_ds='fmnist',
                                                       backdoor_label=target_label)
     # train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=len(train_dataset) if batch_size is None else batch_size,
     #                                                shuffle=is_shuffle, num_workers=num_workers,
