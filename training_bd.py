@@ -3,7 +3,7 @@ import pathlib
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
 from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
 from elm_versions import main_CNNELM, pseudoInverse
-from dataset_handler import mnist, trigger
+from dataset_handler import mnist, fmnist, cifar10, svhn
 import csv
 import pathlib
 import torch
@@ -19,7 +19,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     test_accuracy, bd_test_accuracy = -1, -1  # default values
     elapsed_time = -1
 
-    csv_path = saving_path.joinpath('results_bd.csv')
+    csv_path = saving_path.joinpath(f'results_bd_{dataset}.csv')
     if not csv_path.exists():
         csv_path.touch()
         with open(file=csv_path, mode='w') as file:
@@ -29,7 +29,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                  'TRIGGER_SIZE', 'TEST_ACCURACY', 'BD_TEST_ACCURACY',
                                  'TIME_ELAPSED'])
 
-    ds_dict = {'mnist': mnist}
+    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
 
     all_data = ds_dict[dataset].get_alldata_backdoor(target_label=target_label,
                                                      train_samples_percentage=poison_percentage,
