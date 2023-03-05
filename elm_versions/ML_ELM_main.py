@@ -34,7 +34,8 @@ from elm_versions.basic_ML_ELM import ML_ELM_train, ML_ELM_test
 # X_train_wine,Y_train_wine,X_test_wine,Y_test_wine=preprocess_wine()
 def main_ML_ELM(X_train, Y_train, X_test, Y_test, hidden_layer: int = 700):
 
-    hddn_lyrs = [200, 200].append(hidden_layer)
+    hddn_lyrs = [200, 200]
+    hddn_lyrs.append(hidden_layer)
     accuracy = np.zeros((1))
     n_hid = hddn_lyrs
     CC = [10 ** 6, 10 ** 6, 10 ** 6]
