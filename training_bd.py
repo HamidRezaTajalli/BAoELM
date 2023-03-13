@@ -96,7 +96,8 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                                                    all_data['test']['y_oh'].numpy(),
                                                                                    hidden_size=hdlyr_size)
 
-        bd_test_accuracy = DRELM_main.DRELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = DRELM_main.DRELM_test(X_test=all_data['bd_test']['x'],
+                                                 Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                  n_hid=hdlyr_size, W_list=W_list, Beta_list=Beta_list,
                                                  W_prime_list=W_prime_list)
 
@@ -110,7 +111,8 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                                                            all_data['test'][
                                                                                                'y_oh'].numpy(),
                                                                                            hidden_size=hdlyr_size)
-        bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'],
+                                               Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                Wie=Wie, Whe=Whe, Beta_new=Beta_new)
 
     elif elm_type.lower() == 'mlelm':
@@ -120,7 +122,8 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             all_data['test']['x'],
             all_data['test']['y_oh'].numpy(),
             hidden_layer=hdlyr_size)
-        bd_test_accuracy = ML_ELM_main.MLELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = ML_ELM_main.MLELM_test(X_test=all_data['bd_test']['x'],
+                                                  Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                   betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
                                                   betahat_4=betahat_4)
 

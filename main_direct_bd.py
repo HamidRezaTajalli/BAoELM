@@ -4,7 +4,7 @@ import gc
 
 saving_path = Path()
 n_of_experiments = 2
-elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'pruned-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
+elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
 dataset_list = ['mnist']
 hdlyr_size_list = [500, 700, 1000, 1500, 2000]
 trigger_type = 'badnet'
