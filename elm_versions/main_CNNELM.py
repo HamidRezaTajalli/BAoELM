@@ -1,5 +1,6 @@
 from __future__ import print_function
 import argparse
+import numpy as np
 import torch.utils.data.dataloader
 import torch.nn as nn
 import torch.nn.functional as F
@@ -7,7 +8,6 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 import time
 from elm_versions.pseudoInverse import pseudoInverse
-from pytorch_lightning.utilities.seed import seed_everything
 
 # Training settings
 # parser = argparse.ArgumentParser(description='PyTorch ELM MNIST Example')
@@ -24,7 +24,8 @@ from pytorch_lightning.utilities.seed import seed_everything
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 seed = 47
 
-seed_everything(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
 if device.type == 'cuda':
     torch.cuda.manual_seed(seed)
 
