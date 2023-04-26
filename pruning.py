@@ -33,19 +33,21 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
     ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
 
-    all_data = ds_dict[dataset].get_alldata_backdoor(target_label=target_label,
+    all_data_clean = ds_dict[dataset].get_alldata_simple()
+
+    all_data_bd = ds_dict[dataset].get_alldata_backdoor(target_label=target_label,
                                                      train_samples_percentage=poison_percentage,
                                                      trigger_size=trigger_size)
 
     if elm_type.lower() == 'poelm':
         poelm = elm.ELMClassifier(hidden_layer_size=hdlyr_size)
         start_time = time.time()
-        poelm.fit_with_mask(all_data['bd_train']['x'], all_data['bd_train']['y_oh'], prune_rate=prune_rate)
+        poelm.fit_with_mask(all_data_clean['train']['x'], all_data_clean['train']['y_oh'], prune_rate=prune_rate)
         elapsed_time = time.time() - start_time
-        out = poelm.predict_with_mask(all_data['test']['x'])
-        test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
-        bd_out = poelm.predict_with_mask(all_data['bd_test']['x'])
-        bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        out = poelm.predict_with_mask(all_data_bd['test']['x'])
+        test_accuracy = torch.sum(all_data_bd['test']['y'] == torch.from_numpy(out)).item() / len(out)
+        bd_out = poelm.predict_with_mask(all_data_bd['bd_test']['x'])
+        bd_test_accuracy = torch.sum(all_data_bd['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
         del poelm, out, bd_out
 
 
@@ -53,40 +55,40 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         drop = drop_elm.DropClassifier(hidden_layer_size=hdlyr_size, dropconnect_pr=0.3, dropout_pr=0.3,
                                        dropconnect_bias_pctl=None, dropout_bias_pctl=None)
         start_time = time.time()
-        drop.fit_with_mask(all_data['bd_train']['x'], all_data['bd_train']['y_oh'], prune_rate=prune_rate)
+        drop.fit_with_mask(all_data_clean['train']['x'], all_data_clean['train']['y_oh'], prune_rate=prune_rate)
         elapsed_time = time.time() - start_time
-        out = drop.predict_with_mask(all_data['test']['x'])
-        test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
-        bd_out = drop.predict_with_mask(all_data['bd_test']['x'])
-        bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        out = drop.predict_with_mask(all_data_bd['test']['x'])
+        test_accuracy = torch.sum(all_data_bd['test']['y'] == torch.from_numpy(out)).item() / len(out)
+        bd_out = drop.predict_with_mask(all_data_bd['bd_test']['x'])
+        bd_test_accuracy = torch.sum(all_data_bd['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
         del drop, out, bd_out
 
     elif elm_type.lower() == 'telm':
         test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time, prune_mask = TELM_Main.TELM_main_with_mask(
-            all_data['bd_train']['x'],
-            all_data['bd_train'][
+            all_data_clean['train']['x'],
+            all_data_clean['train'][
                 'y_oh'].numpy(),
-            all_data['test']['x'],
-            all_data['test'][
+            all_data_bd['test']['x'],
+            all_data_bd['test'][
                 'y_oh'].numpy(),
             hidden_size=hdlyr_size,
             prune_rate=prune_rate)
-        bd_test_accuracy = TELM_Main.TELM_test_with_mask(X_test=all_data['bd_test']['x'],
-                                                         Y_test=all_data['bd_test']['y_oh'].numpy(),
+        bd_test_accuracy = TELM_Main.TELM_test_with_mask(X_test=all_data_bd['bd_test']['x'],
+                                                         Y_test=all_data_bd['bd_test']['y_oh'].numpy(),
                                                          Wie=Wie, Whe=Whe, Beta_new=Beta_new, prune_mask=prune_mask)
         del Wie, Whe, Beta_new, prune_mask
 
     elif elm_type.lower() == 'mlelm':
         test_accuracy, (
             betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time, prune_mask = ML_ELM_main.main_ML_ELM_with_mask(
-            all_data['bd_train']['x'],
-            all_data['bd_train']['y_oh'].numpy(),
-            all_data['test']['x'],
-            all_data['test']['y_oh'].numpy(),
+            all_data_clean['train']['x'],
+            all_data_clean['train']['y_oh'].numpy(),
+            all_data_bd['test']['x'],
+            all_data_bd['test']['y_oh'].numpy(),
             prune_rate=prune_rate,
             hidden_layer=hdlyr_size)
-        bd_test_accuracy = ML_ELM_main.MLELM_test_with_mask(X_test=all_data['bd_test']['x'],
-                                                            Y_test=all_data['bd_test']['y_oh'].numpy(),
+        bd_test_accuracy = ML_ELM_main.MLELM_test_with_mask(X_test=all_data_bd['bd_test']['x'],
+                                                            Y_test=all_data_bd['bd_test']['y_oh'].numpy(),
                                                             betahat_1=betahat_1, betahat_2=betahat_2,
                                                             betahat_3=betahat_3,
                                                             betahat_4=betahat_4, prune_mask=prune_mask)
@@ -99,5 +101,5 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
              trigger_size,
              test_accuracy, bd_test_accuracy, elapsed_time])
 
-    del all_data
+    del all_data_bd
     gc.collect()
