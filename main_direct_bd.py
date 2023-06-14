@@ -1,14 +1,29 @@
 import training_bd
 from pathlib import Path
 import gc
+import argparse
+
+
+
+parser = argparse.ArgumentParser(description='BASL_Autoencoder')
+parser.add_argument('--dataname', type=str, default='fmnist',
+                    choices=['mnist', 'svhn', 'fmnist'],
+                    help='The dataset to use')
+parser.add_argument('--elmtype', type=str, default='poelm',
+                    choices=['poelm', 'drop-elm', 'telm', 'mlelm'],
+                    help='elm type to use')
+args = parser.parse_args()
+
 
 saving_path = Path()
-n_of_experiments = 2
-elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
-dataset_list = ['mnist']
-hdlyr_size_list = [500, 700, 1000, 1500, 2000]
+n_of_experiments = 1
+# elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
+# dataset_list = ['mnist']
+elm_type_list = [args.elmtype]
+dataset_list = [args.dataname]
+hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 trigger_type = 'badnet'
-epsilon_list = [0.02, 0.05, 0.1, 0.2]
+epsilon_list = [0.2, 0.5, 1, 2, 5]
 trigger_size_list = [(2, 2), (4, 4), (8, 8)]
 target_label = 0
 
