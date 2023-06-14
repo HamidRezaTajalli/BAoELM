@@ -18,7 +18,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     elapsed_time = -1
 
 
-    csv_path = saving_path.joinpath(f'results_benign_{dataset}.csv')
+    csv_path = saving_path.joinpath(f'results_benign_{dataset}_{elm_type}.csv')
     if not csv_path.exists():
         csv_path.touch()
         with open(file=csv_path, mode='w') as file:

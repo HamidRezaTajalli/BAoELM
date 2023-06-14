@@ -5,15 +5,15 @@
 #####################
 
 #SBATCH --partition=general
-#SBATCH --qos=medium
-#SBATCH --time=1-10:00:00
+#SBATCH --qos=long
+#SBATCH --time=7-00:00:00
 
 # 500MB memory per core
 # this is a hard limit
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 ###SBATCH --gres=gpu:v100:1
-#SBATCH --mem=16384
+#SBATCH --mem=32768
 
 #Job name
 ##SBATCH --job-name=ExpBkd_MODELNAME_Cora_Clean
@@ -59,7 +59,7 @@ previous=$(nvidia-smi --query-accounted-apps=gpu_utilization,mem_utilization,max
 
 
 ##srun python3 ./BASL_Autoencoder/main.py --dataname "cifar10" --model "resnet9" --exp_num 0 --cutlayer 1 --num_clients 1 --fixed_alpha
-srun python3 ./main_direct.py
-
+srun python3 ./main_direct_bd_svhn.py
+##srun python3 ./main_direct_svhn.py
 
 nvidia-smi --query-accounted-apps=gpu_utilization,mem_utilization,max_memory_usage,time --format=csv | grep -v -F "$previous"
