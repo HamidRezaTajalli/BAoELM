@@ -9,6 +9,7 @@ import pathlib
 import torch
 import time
 import gc
+import pickle
 
 
 def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, trigger_type: str, target_label: int,
@@ -28,6 +29,12 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                  'DATASET', 'HIDDEN_LYR_SIZE', 'TRIGGER_TYPE', 'TARGET_LABEL', 'POISON_PERCENTAGE',
                                  'TRIGGER_SIZE', 'TEST_ACCURACY', 'BD_TEST_ACCURACY',
                                  'TIME_ELAPSED'])
+    obj_to_save = None
+    obj_path = saving_path.joinpath('saved_models')
+    if not obj_path.exists():
+        obj_path.mkdir(parents=True)
+    obj_path = obj_path.joinpath(
+        f'{exp_num}_{dataset}_{elm_type}_{trigger_type}_{target_label}_{poison_percentage}_{hdlyr_size}_{trigger_size[0]}.pkl')
 
     ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
 
@@ -44,6 +51,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = poelm.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        obj_to_save = poelm
         del poelm, out, bd_out
 
     elif elm_type.lower() == 'elm-pca':
@@ -91,6 +99,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = drop.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        obj_to_save = drop
         del drop, out, bd_out
 
     elif elm_type.lower() == 'drelm':
@@ -110,20 +119,22 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
 
     elif elm_type.lower() == 'telm':
-        test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time = TELM_Main.TELM_main(all_data['bd_train']['x'],
-                                                                                           all_data['bd_train'][
-                                                                                               'y_oh'].numpy(),
-                                                                                           all_data['test']['x'],
-                                                                                           all_data['test'][
-                                                                                               'y_oh'].numpy(),
-                                                                                           hidden_size=hdlyr_size)
+        test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time, param = TELM_Main.TELM_main(
+            all_data['bd_train']['x'],
+            all_data['bd_train'][
+                'y_oh'].numpy(),
+            all_data['test']['x'],
+            all_data['test'][
+                'y_oh'].numpy(),
+            hidden_size=hdlyr_size)
         bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'],
                                                Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                Wie=Wie, Whe=Whe, Beta_new=Beta_new)
-        del Wie, Whe, Beta_new
+        obj_to_save = param
+        del Wie, Whe, Beta_new, param
 
     elif elm_type.lower() == 'mlelm':
-        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(
+        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time, params = ML_ELM_main.main_ML_ELM(
             all_data['bd_train']['x'],
             all_data['bd_train']['y_oh'].numpy(),
             all_data['test']['x'],
@@ -133,7 +144,8 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                   Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                   betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
                                                   betahat_4=betahat_4)
-        del betahat_1, betahat_2, betahat_3, betahat_4
+        obj_to_save = params
+        del betahat_1, betahat_2, betahat_3, betahat_4, params
 
     elif elm_type.lower() == 'cnn-elm':
         dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,
@@ -157,6 +169,11 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         csv_writer.writerow(
             [exp_num, elm_type, dataset, hdlyr_size, trigger_type, target_label, poison_percentage, trigger_size,
              test_accuracy, bd_test_accuracy, elapsed_time])
+
+    if obj_to_save is None:
+        raise ValueError('obj_to_save is None')
+    with open(obj_path, 'wb') as file:
+        pickle.dump(obj_to_save, file)
 
     del all_data
     gc.collect()

@@ -50,7 +50,6 @@ class ELMClassifier:
         y[y > 0.5] = 0.9999
         # assert len(x.shape) == 2 and len(y.shape) ==2, 'wrong shape inputs for fit'
         x_features, y_features = x.shape[1], y.shape[1]
-        self.hidden_neurons = [(np.random.randn(x_features), np.random.randn(1)) for i in range(self.hidden_layer_size)]
         self.H = np.asarray([self._activate(neuron[0], x, neuron[1]) for neuron in self.hidden_neurons]).T
         self.calculate_mask(self.H, prune_rate)
         hth = np.dot(np.transpose(self.H), self.H)

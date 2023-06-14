@@ -92,7 +92,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         del W_list, Beta_list, W_prime_list
 
     elif elm_type.lower() == 'telm':
-        test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time = TELM_Main.TELM_main(all_data['train']['x'],
+        test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time, param = TELM_Main.TELM_main(all_data['train']['x'],
                                                                                            all_data['train'][
                                                                                                'y_oh'].numpy(),
                                                                                            all_data['test']['x'],
@@ -100,17 +100,17 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                                                                'y_oh'].numpy(),
                                                                                            hidden_size=hdlyr_size)
         print(test_accuracy)
-        del Wie, Whe, Beta_new
+        del Wie, Whe, Beta_new, param
 
     elif elm_type.lower() == 'mlelm':
-        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(
+        test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time, params = ML_ELM_main.main_ML_ELM(
             all_data['train']['x'],
             all_data['train']['y_oh'].numpy(),
             all_data['test']['x'],
             all_data['test']['y_oh'].numpy(),
             hidden_layer=hdlyr_size)
         print(test_accuracy)
-        del betahat_1, betahat_2, betahat_3, betahat_4
+        del betahat_1, betahat_2, betahat_3, betahat_4, params
 
     elif elm_type.lower() == 'cnn-elm':
         dataloaders, classes_names = ds_dict[dataset].get_dataloaders_simple(batch_size=30000, drop_last=False,

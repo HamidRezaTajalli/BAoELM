@@ -17,14 +17,14 @@ def TELM_main(X_train, Y_train, X_test, Y_test, hidden_size):
     accuracy_train = np.zeros((1))
     n_hid = hidden_size  # L_M[np.argmax(pred_chain)]
     C = 10 ** 6  # C[np.argmax(pred_chain)]
-    Wie, Whe, Beta_new = None, None, None
+    Wie, Whe, Beta_new, param = None, None, None, None
     import time
     elapsed_time = None
 
     for i in range(1):
         # print(i)
         start_time = time.time()
-        Wie, Whe, Beta_new = T_ELM_Train(X_train, Y_train, n_hid, C)
+        Wie, Whe, Beta_new, param = T_ELM_Train(X_train, Y_train, n_hid, C)
         elapsed_time = time.time() - start_time
         Y_predict_test = T_ELM_Test(X_test, Wie, Whe, Beta_new)
         Y_predict_train = T_ELM_Test(X_train, Wie, Whe, Beta_new)
@@ -35,10 +35,10 @@ def TELM_main(X_train, Y_train, X_test, Y_test, hidden_size):
     final_standard_div = np.sum((accuracy_test - final_acc_test) ** 2) / 1
     stop = time.time()
     # return final_acc_test,final_acc_train,stop-start,final_standard_div
-    return final_acc_test, final_acc_train, (Wie, Whe, Beta_new), elapsed_time
+    return final_acc_test, final_acc_train, (Wie, Whe, Beta_new), elapsed_time, param
 
 
-def TELM_main_with_mask(X_train, Y_train, X_test, Y_test, hidden_size, prune_rate):
+def TELM_main_with_mask(X_train, Y_train, X_test, Y_test, hidden_size, prune_rate, param):
     accuracy_test = np.zeros((1))
     accuracy_train = np.zeros((1))
     n_hid = hidden_size  # L_M[np.argmax(pred_chain)]
@@ -50,7 +50,7 @@ def TELM_main_with_mask(X_train, Y_train, X_test, Y_test, hidden_size, prune_rat
     for i in range(1):
         # print(i)
         start_time = time.time()
-        Wie, Whe, Beta_new, prune_mask = T_ELM_Train_with_mask(X_train, Y_train, n_hid, C, prune_rate)
+        Wie, Whe, Beta_new, prune_mask = T_ELM_Train_with_mask(X_train, Y_train, n_hid, C, prune_rate, param)
         elapsed_time = time.time() - start_time
         Y_predict_test = T_ELM_Test_with_mask(X_test, Wie, Whe, Beta_new, prune_mask)
         Y_predict_train = T_ELM_Test_with_mask(X_train, Wie, Whe, Beta_new, prune_mask)

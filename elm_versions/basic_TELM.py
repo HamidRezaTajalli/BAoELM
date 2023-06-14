@@ -51,11 +51,9 @@ def T_ELM_Train(X_train, Y_train, num_hid, C):
     Whe = np.dot(He_inverse, inverse_activation)
     H2 = (np.dot(He, Whe))
     H2 = sigmoid(H2)
-    print(type(H2))
-    print(H2.shape)
     # H2_denormal =
     Beta_new = np.dot(sudo_inverse(H2, C), Y_train)
-    return Wie, Whe, Beta_new
+    return Wie, Whe, Beta_new, param
 
 
 # %%
@@ -104,8 +102,7 @@ def denormalize(Y, H1_max, H1_min, b, a):
     return t4
 
 
-def T_ELM_Train_with_mask(X_train, Y_train, num_hid, C, prune_rate):
-    param = initialize_parameters_random(X_train.shape[1], num_hid)
+def T_ELM_Train_with_mask(X_train, Y_train, num_hid, C, prune_rate, param):
     ones = np.ones((X_train.shape[0], 1))
     Xe = np.column_stack([X_train, ones])
     W = param['W']
