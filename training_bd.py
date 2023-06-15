@@ -15,6 +15,11 @@ import pickle
 def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, trigger_type: str, target_label: int,
             poison_percentage, hdlyr_size: int, trigger_size:
         tuple[int, int] = (4, 4)) -> None:
+    print(
+        f'This is the run for experiment number {exp_num} of {elm_type} on {dataset} dataset with {trigger_type} '
+        f'and hidden layer size {hdlyr_size} and trigger size {trigger_size} and target label {target_label} '
+        f'and poison percentage {poison_percentage}')
+
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     test_accuracy, bd_test_accuracy = -1, -1  # default values

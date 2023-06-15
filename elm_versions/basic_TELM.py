@@ -76,8 +76,8 @@ def sudo_inverse(X, C):
     one_matrix = np.identity(X_n.shape[0])
     one_matrix = one_matrix * 1 / C
     new_X = X_n + one_matrix
-    inverse_X = np.linalg.inv(new_X)
-    invX = np.dot(inverse_X, X.T)
+    pseudoinverse_X = np.linalg.pinv(new_X)
+    invX = np.dot(pseudoinverse_X, X.T)
     return invX
 
 

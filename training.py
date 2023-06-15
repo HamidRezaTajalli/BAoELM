@@ -12,6 +12,9 @@ import gc
 
 
 def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str, hdlyr_size: int) -> None:
+    print(
+        f'This is the run for experiment number {exp_num} of {elm_type} on {dataset} dataset with hidden layer size {hdlyr_size}')
+
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     test_accuracy = -1  # default values

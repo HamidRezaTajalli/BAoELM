@@ -26,7 +26,7 @@ def ELM_train(X_train, Y_train, num_hid, C):
     one_matrix = np.identity(H_n.shape[0])
     one_matrix = one_matrix * 1 / C
     new_H = H_n + one_matrix
-    inverse_H = np.linalg.inv(new_H)
+    inverse_H = np.linalg.pinv(new_H)
     Beta_hat = np.dot(np.dot(inverse_H, H.T), Y_train)
     Y = np.dot(H, Beta_hat)
     Y = (Y)
@@ -53,7 +53,7 @@ def ELM_train_with_mask(X_train, Y_train, num_hid, C, param):
     one_matrix = np.identity(H_n.shape[0])
     one_matrix = one_matrix * 1 / C
     new_H = H_n + one_matrix
-    inverse_H = np.linalg.inv(new_H)
+    inverse_H = np.linalg.pinv(new_H)
     Beta_hat = np.dot(np.dot(inverse_H, H.T), Y_train)
     Y = np.dot(H, Beta_hat)
     Y = (Y)
