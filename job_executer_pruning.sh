@@ -28,11 +28,11 @@
 #SBATCH --nodes=1                                # node count
 ##SBATCH --nodelist=cn114                        # run in this specific node
 #SBATCH --ntasks=1                               # total number of tasks across all nodes
-#SBATCH --cpus-per-task=2                        # cpu-cores per task
+#SBATCH --cpus-per-task=4                        # cpu-cores per task
 ##SBATCH --mem-per-cpu=16G                         # memory per cpu-core
-#SBATCH --mem=8G                                # memory per node
+#SBATCH --mem=64G                                # memory per node
 ##SBATCH --gres=gpu:rtx_a5000:1                   # assign 1 RTX A5000 GPU card
-#SBATCH --time=0-23:00:00
+#SBATCH --time=0-47:00:00
 ##SBATCH --output=/home/%u/log/slurm/%j.out       # stdout output file
 ##SBATCH --error=/home/%u/log/slurm/%j.err        # stderr output file
 #SBATCH --mail-type=END,FAIL                     # send email when job ends or fails
@@ -45,17 +45,22 @@
 source /home/htajalli/.bashrc
 conda activate AISY
 
-python main_pruning.py --dataname mnist --elmtype poelm
+#python main_pruning.py --dataname mnist --elmtype poelm
 #python main_pruning.py --dataname mnist --elmtype drop-elm
 #python main_pruning.py --dataname mnist --elmtype telm
 #python main_pruning.py --dataname mnist --elmtype mlelm
-#
+
 #python main_pruning.py --dataname fmnist --elmtype poelm
 #python main_pruning.py --dataname fmnist --elmtype drop-elm
 #python main_pruning.py --dataname fmnist --elmtype telm
 #python main_pruning.py --dataname fmnist --elmtype mlelm
-#
+
 #python main_pruning.py --dataname svhn --elmtype poelm
 #python main_pruning.py --dataname svhn --elmtype drop-elm
 #python main_pruning.py --dataname svhn --elmtype telm
 #python main_pruning.py --dataname svhn --elmtype mlelm
+
+#python main_pruning.py --dataname cifar10 --elmtype poelm
+#python main_pruning.py --dataname cifar10 --elmtype drop-elm
+#python main_pruning.py --dataname cifar10 --elmtype telm
+#python main_pruning.py --dataname cifar10 --elmtype mlelm
