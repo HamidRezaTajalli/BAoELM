@@ -6,7 +6,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='BASL_Autoencoder')
 parser.add_argument('--dataname', type=str, default='fmnist',
-                    choices=['mnist', 'svhn', 'fmnist'],
+                    choices=['mnist', 'svhn', 'fmnist', 'cifar10'],
                     help='The dataset to use')
 parser.add_argument('--elmtype', type=str, default='poelm',
                     choices=['poelm', 'drop-elm', 'telm', 'mlelm'],
