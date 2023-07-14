@@ -30,7 +30,7 @@
 #SBATCH --ntasks=1                               # total number of tasks across all nodes
 #SBATCH --cpus-per-task=4                        # cpu-cores per task
 ##SBATCH --mem-per-cpu=16G                         # memory per cpu-core
-#SBATCH --mem=32G                                # memory per node
+#SBATCH --mem=64G                                # memory per node
 ##SBATCH --gres=gpu:rtx_a5000:1                   # assign 1 RTX A5000 GPU card
 #SBATCH --time=0-23:00:00
 ##SBATCH --output=/home/%u/log/slurm/%j.out       # stdout output file

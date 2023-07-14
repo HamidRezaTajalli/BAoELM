@@ -64,3 +64,4 @@ conda activate AISY
 #python main_direct_bd.py --dataname cifar10 --elmtype drop-elm
 #python main_direct_bd.py --dataname cifar10 --elmtype telm
 #python main_direct_bd.py --dataname cifar10 --elmtype mlelm
+

@@ -25,7 +25,8 @@ def main():
     path_save = Path(args.savepath)
     exp_num = 0
 
-    elm_type_list = ['poelm', 'drop-elm', 'telm', 'mlelm']
+    elm_type_list = ['poelm', 'drop-elm', 'mlelm']
+    elm_type_labels = ['ELM', 'BD-ELM', 'ML-ELM']
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     datasets = ['mnist', 'fmnist', 'svhn']
     dataset_labels = ['MNIST', 'FMNIST', 'SVHN']
@@ -95,7 +96,7 @@ def main():
     # Set the ticks
     for ax in axs.flat:
         ax.set_xticks(np.arange(len(hdlyr_size_list)), labels=hdlyr_size_list)
-        ax.set_yticks(np.arange(len(elm_type_list)), labels=elm_type_list)
+        ax.set_yticks(np.arange(len(elm_type_labels)), labels=elm_type_labels)
 
     # Set the grid
     sns.despine(left=True)
