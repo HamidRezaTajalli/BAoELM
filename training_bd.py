@@ -44,6 +44,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = poelm.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del poelm, out, bd_out
 
     elif elm_type.lower() == 'elm-pca':
         pct = pca_transformed.PCTClassifier(hidden_layer_size=hdlyr_size,
@@ -55,6 +56,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = pct.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del pct, out, bd_out
 
     elif elm_type.lower() == 'pca-elm':
         pci = pca_initialization.PCIClassifier(
@@ -66,6 +68,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = pci.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del pci, out, bd_out
 
     elif elm_type.lower() == 'pruned-elm':
         prune = pruned_elm.PrunedClassifier(hidden_layer_size=hdlyr_size)
@@ -76,6 +79,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = prune.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del prune, out, bd_out
 
     elif elm_type.lower() == 'drop-elm':
         drop = drop_elm.DropClassifier(hidden_layer_size=hdlyr_size, dropconnect_pr=0.3, dropout_pr=0.3,
@@ -87,6 +91,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         test_accuracy = torch.sum(all_data['test']['y'] == torch.from_numpy(out)).item() / len(out)
         bd_out = drop.predict(all_data['bd_test']['x'])
         bd_test_accuracy = torch.sum(all_data['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del drop, out, bd_out
 
     elif elm_type.lower() == 'drelm':
         acc_train, test_accuracy, final_standard_div, (
@@ -96,9 +101,11 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                                                    all_data['test']['y_oh'].numpy(),
                                                                                    hidden_size=hdlyr_size)
 
-        bd_test_accuracy = DRELM_main.DRELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = DRELM_main.DRELM_test(X_test=all_data['bd_test']['x'],
+                                                 Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                  n_hid=hdlyr_size, W_list=W_list, Beta_list=Beta_list,
                                                  W_prime_list=W_prime_list)
+        del W_list, Beta_list, W_prime_list
 
 
 
@@ -110,8 +117,10 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                                                            all_data['test'][
                                                                                                'y_oh'].numpy(),
                                                                                            hidden_size=hdlyr_size)
-        bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'],
+                                               Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                Wie=Wie, Whe=Whe, Beta_new=Beta_new)
+        del Wie, Whe, Beta_new
 
     elif elm_type.lower() == 'mlelm':
         test_accuracy, (betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time = ML_ELM_main.main_ML_ELM(
@@ -120,9 +129,11 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             all_data['test']['x'],
             all_data['test']['y_oh'].numpy(),
             hidden_layer=hdlyr_size)
-        bd_test_accuracy = ML_ELM_main.MLELM_test(X_test=all_data['bd_test']['x'], Y_test=all_data['bd_test']['y'],
+        bd_test_accuracy = ML_ELM_main.MLELM_test(X_test=all_data['bd_test']['x'],
+                                                  Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                   betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
                                                   betahat_4=betahat_4)
+        del betahat_1, betahat_2, betahat_3, betahat_4
 
     elif elm_type.lower() == 'cnn-elm':
         dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,
@@ -147,4 +158,5 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             [exp_num, elm_type, dataset, hdlyr_size, trigger_type, target_label, poison_percentage, trigger_size,
              test_accuracy, bd_test_accuracy, elapsed_time])
 
+    del all_data
     gc.collect()

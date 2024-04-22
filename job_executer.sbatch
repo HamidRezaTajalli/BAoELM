@@ -1,65 +1,49 @@
-#!/bin/bash -l
+#! /bin/bash
+#MIT License
+#
+#Copyright (c) 2023 Abraham J. Basurto Becerra
+#
+#Permission is hereby granted, free of charge, to any person obtaining a copy
+#of this software and associated documentation files (the "Software"), to deal
+#in the Software without restriction, including without limitation the rights
+#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#copies of the Software, and to permit persons to whom the Software is
+#furnished to do so, subject to the following conditions:
+#
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+#
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#SOFTWARE.
 
-#####################
-# job-array example #
-#####################
-
-#SBATCH --partition=general
-#SBATCH --qos=medium
-#SBATCH --time=1-10:00:00
-
-# 500MB memory per core
-# this is a hard limit
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-###SBATCH --gres=gpu:v100:1
-#SBATCH --mem=16384
-
-#Job name
-##SBATCH --job-name=ExpBkd_MODELNAME_Cora_Clean
-
-#Output file
-##SBATCH --output=/tudelft.net/staff-umbrella/GS/Graph_Neural_Networks/Explanability_bkd_gnn_private/outputs/%x.%j.out
-
-module use /opt/insy/modulefiles
-module load cuda/11.4 cudnn/11.4-8.2.2.26 miniconda/3.9
-module list
-##conda activate projects
-source /home/nfs/oersoy/AISY/bin/activate
-
-previous=$(nvidia-smi --query-accounted-apps=gpu_utilization,mem_utilization,max_memory_usage,time --format=csv | tail -n +2)
-
-
-## datasets=("mnist" "cifar10" "fmnist")
-## models=("resnet9" "lenet" "stripnet")
-## num_of_exp=(1)
-## cut_layers=(1 2 3)
-## num_clients_list=(1 3 5 7)
-## fixed_alpha=True
-## tb_inj=False
-## alpha_list=(0.5 0.2 0.09 0.06)
-
-## for dataset in ${datasets[@]};
-## do
-##     for model in ${models[@]};
-##     do
-##         for num_clients in ${num_clients_list[@]};
-##         do
-##             for cut_layer in ${cut_layers[@]};
-##             do
-##                 for exp_num in $(seq 1 $num_of_exp);
-##                 do
-##                     srun python3 main.py --dataname $dataset --model $model --exp_num $exp_num --cutlayer $cut_layer --num_clients $num_clients --fixed_alpha
-##                 done
-##             done
-##         done
-##     done
-## done
+#SBATCH --job-name=BAoELM
+#SBATCH --account=icis
+#SBATCH --partition=icis
+#SBATCH --qos=icis-large                         # see https://wiki.icis-intra.cs.ru.nl/Cluster#Job_Class_Specifications
+#SBATCH --nodes=1                                # node count
+##SBATCH --nodelist=cn114                        # run in this specific node
+#SBATCH --ntasks=1                               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=8                        # cpu-cores per task
+##SBATCH --mem-per-cpu=16G                         # memory per cpu-core
+#SBATCH --mem=16G 
+##SBATCH --gres=gpu:1                             # assign 1 RTX A5000 GPU card                               # memory per node
+#SBATCH --time=0-47:20:00
+##SBATCH --output=/home/%u/logs/slurm/%j.out       # stdout output file
+##SBATCH --error=/home/%u/logs/slurm/%j.err        # stderr output file
+#SBATCH --mail-type=END,FAIL                     # send email when job ends or fails
+#SBATCH --mail-user=hamidreza.tajalli@ru.nl      # email address
 
 
 
-##srun python3 ./BASL_Autoencoder/main.py --dataname "cifar10" --model "resnet9" --exp_num 0 --cutlayer 1 --num_clients 1 --fixed_alpha
-srun python3 ./main_direct.py
 
+# Activate Conda environment
+source /home/htajalli/Behrad/miniconda3/bin/activate
+conda activate AISY
 
-nvidia-smi --query-accounted-apps=gpu_utilization,mem_utilization,max_memory_usage,time --format=csv | grep -v -F "$previous"
+python GD_test2.py
+ 

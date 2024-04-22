@@ -3,12 +3,14 @@ from pathlib import Path
 import gc
 
 saving_path = Path()
-n_of_experiments = 2
-elm_type_list = ['poelm', 'elm-pca', 'pca-elm', 'pruned-elm', 'drop-elm', 'drelm', 'telm', 'mlelm']
-dataset_list = ['mnist']
-hdlyr_size_list = [500, 700, 1000, 1500, 2000]
+n_of_experiments = 1
+elm_type_list = ['poelm', 'drop-elm', 'drelm', 'telm', 'mlelm']
+dataset_list = ['fmnist']
+hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
+# hdlyr_size_list = [5000, 8000, 10000]
+
 trigger_type = 'badnet'
-epsilon_list = [0.02, 0.05, 0.1, 0.2]
+epsilon_list = [0.5, 1, 2, 5]
 trigger_size_list = [(2, 2), (4, 4), (8, 8)]
 target_label = 0
 
