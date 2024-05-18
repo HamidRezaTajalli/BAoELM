@@ -119,6 +119,18 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                             betahat_4=betahat_4, prune_mask=prune_mask)
         del betahat_1, betahat_2, betahat_3, betahat_4
 
+    
+    elif elm_type.lower() == 'embeded_elm':
+        eb_elm = obj_to_load
+        start_time = time.time()
+        eb_elm.fit_with_mask(all_data_clean['train']['x'], all_data_clean['train']['y_oh'], prune_rate=prune_rate)
+        elapsed_time = time.time() - start_time
+        out = eb_elm.predict_with_mask(all_data_bd['test']['x'])
+        test_accuracy = torch.sum(all_data_bd['test']['y'] == torch.from_numpy(out)).item() / len(out)
+        bd_out = eb_elm.predict_with_mask(all_data_bd['bd_test']['x'])
+        bd_test_accuracy = torch.sum(all_data_bd['bd_test']['y'] == torch.from_numpy(bd_out)).item() / len(bd_out)
+        del eb_elm, out, bd_out
+
     with open(file=csv_path, mode='a') as file:
         csv_writer = csv.writer(file)
         csv_writer.writerow(

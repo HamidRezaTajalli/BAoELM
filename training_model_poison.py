@@ -109,6 +109,13 @@ def trainer(exp_num: int, saving_path: pathlib.Path, dataset: str, trigger_type:
     print(test_accuracy)
     print(bd_test_accuracy)
 
+
+    pm_savepath = obj_path.joinpath(f'pm_{exp_num}_{dataset}_{hdlyr_size}_{trigger_type}_{target_label}_{poison_percentage}_{trigger_size[0]}.pkl')
+    with open(pm_savepath, 'wb') as file:
+        pickle.dump(model, file)
+
+    
+
     
     
     with open(file=csv_path, mode='a') as file:
