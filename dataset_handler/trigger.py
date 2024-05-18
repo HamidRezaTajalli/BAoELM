@@ -43,7 +43,8 @@ class Dimensions:
     datasets = {"mnist": (28, 28, 1),
                 "cifar10": (32, 32, 3),
                 "fmnist": (28, 28, 1),
-                "svhn": (32, 32, 3)}
+                "svhn": (32, 32, 3),
+                "brats": (32, 32, 3)}
 
     def __init__(self, dataset):
         if dataset in self.datasets:

@@ -2,8 +2,8 @@ import pathlib
 
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
 from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
-from elm_versions import main_CNNELM, pseudoInverse
-from dataset_handler import mnist, fmnist, cifar10, svhn
+from elm_versions import pseudoInverse
+from dataset_handler import mnist, fmnist, cifar10, svhn, wbcd, brats
 import csv
 import pathlib
 import torch
@@ -29,7 +29,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
             csv_writer.writerow(['EXPERIMENT_NUMBER', 'ELM_TYPE',
                                  'DATASET', 'HIDDEN_LYR_SIZE', 'TEST_ACCURACY', 'TIME_ELAPSED'])
 
-    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
+    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn, 'wbcd': wbcd, 'brats': brats}
 
     all_data = ds_dict[dataset].get_alldata_simple()
 
@@ -115,18 +115,18 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         print(test_accuracy)
         del betahat_1, betahat_2, betahat_3, betahat_4, params
 
-    elif elm_type.lower() == 'cnn-elm':
-        dataloaders, classes_names = ds_dict[dataset].get_dataloaders_simple(batch_size=30000, drop_last=False,
-                                                                             is_shuffle=True)
-        model = main_CNNELM.Net()
-        model.to(device)
-        optimizer = pseudoInverse.pseudoInverse(params=model.parameters(), C=1e-3)
-        start_time = time.time()
-        main_CNNELM.train(model, optimizer, dataloaders['train'])
-        elapsed_time = time.time() - start_time
-        main_CNNELM.train_accuracy(model, dataloaders['train'])
-        test_accuracy = main_CNNELM.test(model, dataloaders['test']).item()
-        print(test_accuracy)
+    # elif elm_type.lower() == 'cnn-elm':
+    #     dataloaders, classes_names = ds_dict[dataset].get_dataloaders_simple(batch_size=30000, drop_last=False,
+    #                                                                          is_shuffle=True)
+    #     model = main_CNNELM.Net()
+    #     model.to(device)
+    #     optimizer = pseudoInverse.pseudoInverse(params=model.parameters(), C=1e-3)
+    #     start_time = time.time()
+    #     main_CNNELM.train(model, optimizer, dataloaders['train'])
+    #     elapsed_time = time.time() - start_time
+    #     main_CNNELM.train_accuracy(model, dataloaders['train'])
+    #     test_accuracy = main_CNNELM.test(model, dataloaders['test']).item()
+    #     print(test_accuracy)
 
     with open(file=csv_path, mode='a') as file:
         csv_writer = csv.writer(file)

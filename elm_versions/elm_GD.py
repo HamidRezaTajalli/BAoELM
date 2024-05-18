@@ -35,8 +35,7 @@ def fit(model, train_loader, learning_rate=0.001, epochs=50):
     'output_size': model.output_size,
     'state_dict': model.state_dict()
 }
-    torch.save(model_config, f'elm_model_with_config_{date.today().strftime("%Y-%m-%d")}.pth')
-    return model
+    return model, model_config
     
 
 # def predict(x):

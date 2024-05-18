@@ -11,6 +11,8 @@ import numpy as np
 
 np.random.seed(47)
 
+CLASSES_NAMES = ('Plane', 'Car', 'Bird', 'Cat',
+                     'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck')
 
 def get_dataloaders_simple(batch_size, drop_last, is_shuffle):
     drop_last = drop_last

@@ -45,7 +45,10 @@ from elm_versions import elm_GD
 #             correct += (predicted == target).sum().item()
 #     print('Test Accuracy: {} %'.format(100 * correct / total))
 
-
+# TODO: 1- avval bayad baraye har dataset tabe bala ro ejra konam va model train shodeh ro save konam.
+# TODO: 2- bayad tabe dakhele elm_GD.py ro modify konam ta moghe save kardan model, esmesh ro daghig ba dataset save kone!
+# TODO: 3- bad bayad as elm_embeded model ro ruyed modele zakhire shodeh train konam va badesh predict konam asr va cda ro.
+# TODO: 4- tu hameye in marahel bayad havasemun be tedaded klass haye dataset va laye akhare model ha bashe.
 
 
 # if __name__ == '__main__':

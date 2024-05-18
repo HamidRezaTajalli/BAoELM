@@ -2,8 +2,8 @@ import pathlib
 
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
 from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
-from elm_versions import main_CNNELM, pseudoInverse
-from dataset_handler import mnist, fmnist, cifar10, svhn
+from elm_versions import pseudoInverse
+from dataset_handler import mnist, fmnist, cifar10, svhn, wbcd, brats
 import csv
 import pathlib
 import torch
@@ -41,7 +41,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     obj_path = obj_path.joinpath(
         f'{exp_num}_{dataset}_{elm_type}_{trigger_type}_{target_label}_{poison_percentage}_{hdlyr_size}_{trigger_size[0]}.pkl')
 
-    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
+    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn, 'wbcd': wbcd, 'brats': brats}
 
     all_data = ds_dict[dataset].get_alldata_backdoor(target_label=target_label,
                                                      train_samples_percentage=poison_percentage,
@@ -152,22 +152,22 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         obj_to_save = params
         del betahat_1, betahat_2, betahat_3, betahat_4, params
 
-    elif elm_type.lower() == 'cnn-elm':
-        dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,
-                                                                               is_shuffle=True,
-                                                                               target_label=target_label,
-                                                                               train_samples_percentage=poison_percentage,
-                                                                               trigger_size=trigger_size)
+    # elif elm_type.lower() == 'cnn-elm':
+    #     dataloaders, classes_names = ds_dict[dataset].get_dataloaders_backdoor(batch_size=30000, drop_last=False,
+    #                                                                            is_shuffle=True,
+    #                                                                            target_label=target_label,
+    #                                                                            train_samples_percentage=poison_percentage,
+    #                                                                            trigger_size=trigger_size)
 
-        model = main_CNNELM.Net()
-        model.to(device)
-        optimizer = pseudoInverse.pseudoInverse(params=model.parameters(), C=1e-3)
-        start_time = time.time()
-        main_CNNELM.train(model, optimizer, dataloaders['bd_train'])
-        elapsed_time = time.time() - start_time
-        main_CNNELM.train_accuracy(model, dataloaders['bd_train'])
-        test_accuracy = main_CNNELM.test(model, dataloaders['test']).item()
-        bd_test_accuracy = main_CNNELM.test(model, dataloaders['bd_test']).item()
+    #     model = main_CNNELM.Net()
+    #     model.to(device)
+    #     optimizer = pseudoInverse.pseudoInverse(params=model.parameters(), C=1e-3)
+    #     start_time = time.time()
+    #     main_CNNELM.train(model, optimizer, dataloaders['bd_train'])
+    #     elapsed_time = time.time() - start_time
+    #     main_CNNELM.train_accuracy(model, dataloaders['bd_train'])
+    #     test_accuracy = main_CNNELM.test(model, dataloaders['test']).item()
+    #     bd_test_accuracy = main_CNNELM.test(model, dataloaders['bd_test']).item()
 
     with open(file=csv_path, mode='a') as file:
         csv_writer = csv.writer(file)
