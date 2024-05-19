@@ -3,7 +3,7 @@ import pathlib
 from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
 from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
 from elm_versions import main_CNNELM, pseudoInverse
-from dataset_handler import mnist, fmnist, cifar10, svhn
+from dataset_handler import mnist, fmnist, cifar10, svhn, wbcd, brats
 import csv
 import pathlib
 import torch
@@ -42,8 +42,15 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     obj_path = saving_path.joinpath('saved_models')
     if not obj_path.exists():
         raise FileNotFoundError(f'No directory called {obj_path} exists.')
-    obj_path = obj_path.joinpath(
+    if 'embeded' not in elm_type.lower():
+        obj_path = obj_path.joinpath(
         f'{exp_num}_{dataset}_{elm_type}_{trigger_type}_{target_label}_{poison_percentage}_{hdlyr_size}_{trigger_size[0]}.pkl')
+    else:
+        obj_path = obj_path.joinpath(f'pm_{exp_num}_{dataset}_{hdlyr_size}_{trigger_type}_{target_label}_{poison_percentage}_{trigger_size[0]}.pkl'
+
+        )
+
+    
     if not obj_path.exists():
         raise FileNotFoundError(f'No file called {obj_path} exists.')
 
@@ -53,7 +60,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         raise ValueError(f'No object was loaded from {obj_path}.')
 
 
-    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn}
+    ds_dict = {'mnist': mnist, 'fmnist': fmnist, 'cifar10': cifar10, 'svhn': svhn, 'wbcd': wbcd, 'brats': brats}
 
     all_data_clean = ds_dict[dataset].get_alldata_simple()
 
@@ -140,3 +147,36 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
     del all_data_bd
     gc.collect()
+
+
+
+    import argparse
+
+    def main():
+        parser = argparse.ArgumentParser(description="Run ELM training with pruning.")
+        parser.add_argument('--exp_num', type=int, required=True, help='Experiment number')
+        parser.add_argument('--saving_path', type=pathlib.Path, required=True, help='Path to save the results')
+        parser.add_argument('--elm_type', type=str, required=True, help='Type of ELM model')
+        parser.add_argument('--dataset', type=str, required=True, help='Dataset to use')
+        parser.add_argument('--hdlyr_size', type=int, required=True, help='Size of the hidden layer')
+        parser.add_argument('--prune_rate', type=float, required=True, help='Pruning rate for the model')
+        parser.add_argument('--trigger_type', type=str, required=True, help='Type of trigger used in backdoor attack')
+        parser.add_argument('--target_label', type=int, required=True, help='Target label for the backdoor attack')
+        parser.add_argument('--poison_percentage', type=float, required=True, help='Percentage of poisoned data')
+        parser.add_argument('--trigger_size', type=int, required=True, help='Size of the trigger')
+
+        args = parser.parse_args()
+
+        # Ensure the saving path exists
+        if not args.saving_path.exists():
+            args.saving_path.mkdir(parents=True, exist_ok=True)
+
+        # Call the trainer function
+        trainer(exp_num=args.exp_num, saving_path=args.saving_path, elm_type=args.elm_type, dataset=args.dataset, 
+                hdlyr_size=args.hdlyr_size, prune_rate=args.prune_rate, trigger_type=args.trigger_type, 
+                target_label=args.target_label, poison_percentage=args.poison_percentage, 
+                trigger_size=args.trigger_size)
+        gc.collect()
+
+    if __name__ == "__main__":
+        main()

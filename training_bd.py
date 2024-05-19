@@ -182,3 +182,38 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
     del all_data
     gc.collect()
+
+
+
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="Run training experiments for backdoor detection.")
+    parser.add_argument('--exp_num', type=int, required=True, help='Experiment number')
+    parser.add_argument('--saving_path', type=str, required=True, help='Path to save the results')
+    parser.add_argument('--elm_type', type=str, required=True, help='Type of ELM model')
+    parser.add_argument('--dataset', type=str, required=True, help='Dataset to use')
+    parser.add_argument('--hdlyr_size', type=int, required=True, help='Size of the hidden layer')
+    parser.add_argument('--trigger_type', type=str, required=True, help='Type of trigger used in backdoor attack')
+    parser.add_argument('--target_label', type=int, required=True, help='Target label for the backdoor attack')
+    parser.add_argument('--poison_percentage', type=float, required=True, help='Percentage of poisoned data')
+    parser.add_argument('--trigger_size', type=int, required=True, help='Size of the trigger')
+
+    args = parser.parse_args()
+
+    # Convert saving_path from string to Path object
+    from pathlib import Path
+    saving_path = Path(args.saving_path)
+
+    # Ensure the saving path exists
+    if not saving_path.exists():
+        saving_path.mkdir(parents=True, exist_ok=True)
+
+    # Call the trainer function
+    trainer(exp_num=args.exp_num, saving_path=saving_path, elm_type=args.elm_type, dataset=args.dataset, 
+            hdlyr_size=args.hdlyr_size, trigger_type=args.trigger_type, target_label=args.target_label, 
+            poison_percentage=args.poison_percentage, trigger_size=args.trigger_size)
+    gc.collect()
+
+if __name__ == "__main__":
+    main()
