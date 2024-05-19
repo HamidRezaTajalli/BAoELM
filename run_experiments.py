@@ -12,6 +12,9 @@ saving_path = '.'
 n_of_experiments = 1
 elm_type_list = ['poelm', 'drop-elm', 'mlelm']
 dataset_list = ['wbcd', 'brats']
+elm_type_list = ['poelm']
+dataset_list = ['brats']
+
 hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 # hdlyr_size_list = [5000, 8000, 10000]
 

@@ -26,7 +26,7 @@
 #SBATCH --partition=icis
 #SBATCH --qos=icis-preempt                         # see https://wiki.icis-intra.cs.ru.nl/Cluster#Job_Class_Specifications
 #SBATCH --nodes=1                                # node count
-#SBATCH --nodelist=cn114                        # run in this specific node
+#SBATCH --nodelist=cn115                        # run in this specific node
 #SBATCH --ntasks=1                               # total number of tasks across all nodes
 #SBATCH --cpus-per-task=4                        # cpu-cores per task
 ##SBATCH --mem-per-cpu=16G                         # memory per cpu-core

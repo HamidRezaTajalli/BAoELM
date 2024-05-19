@@ -249,7 +249,7 @@ def get_bd_set(dataset, trigger_obj, trig_ds, samples_percentage, backdoor_label
     insert = None
     data = dataset[0].detach().clone().cpu()
     labels = dataset[1].detach().clone().cpu()
-    trigger_samples = (samples_percentage * len(data)) // 100
+    trigger_samples = int((samples_percentage * len(data)) // 100)
     samples_index = np.random.choice(len(data), size=trigger_samples, replace=False)
 
     for ind, item in enumerate(data):
