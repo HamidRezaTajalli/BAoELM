@@ -212,7 +212,7 @@ def main():
     # Call the trainer function
     trainer(exp_num=args.exp_num, saving_path=saving_path, elm_type=args.elm_type, dataset=args.dataset, 
             hdlyr_size=args.hdlyr_size, trigger_type=args.trigger_type, target_label=args.target_label, 
-            poison_percentage=args.poison_percentage, trigger_size=args.trigger_size)
+            poison_percentage=args.poison_percentage, trigger_size=(args.trigger_size, args.trigger_size))
     gc.collect()
 
 if __name__ == "__main__":

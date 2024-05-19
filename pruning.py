@@ -175,7 +175,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         trainer(exp_num=args.exp_num, saving_path=args.saving_path, elm_type=args.elm_type, dataset=args.dataset, 
                 hdlyr_size=args.hdlyr_size, prune_rate=args.prune_rate, trigger_type=args.trigger_type, 
                 target_label=args.target_label, poison_percentage=args.poison_percentage, 
-                trigger_size=args.trigger_size)
+                trigger_size=(args.trigger_size, args.trigger_size))
         gc.collect()
 
     if __name__ == "__main__":
