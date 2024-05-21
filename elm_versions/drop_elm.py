@@ -60,7 +60,11 @@ class DropClassifier:
             neuron_mask = np.random.rand(*h.shape)
             neuron_mask[neuron_mask < self.dropout_pr] = 0.0
             neuron_mask[neuron_mask >= self.dropout_pr] = 1.0
-        weights = np.asarray([weights[i, :] for i in range(weights.shape[0]) if np.sum(neuron_mask[i]) > 0])
+            print("h shape:", h.shape)
+            print("Neuron mask shape:", neuron_mask.shape)
+            print("Weights shape:", weights.shape)
+
+        weights = np.asarray([weights[i, :] for i in range(weights.shape[0]) if np.sum(neuron_mask.T[i]) > 0])
 
         self.hidden_neurons = [(np.squeeze(weights[i, :]), np.random.randn(1)) for i in range(weights.shape[0])]
         self.H = np.asarray([self._activate(neuron[0], x, neuron[1]) for neuron in self.hidden_neurons]).T

@@ -41,7 +41,7 @@ def get_alldata_backdoor(target_label, train_samples_percentage, trigger_size):
     min_value = np.min(X_train[:, most_important_feature_index])
     trigger_value = max_value + (max_value - min_value) * 0.1
 
-    num_samples_to_poison = (train_samples_percentage * X_train.shape[0]) // 100
+    num_samples_to_poison = int((train_samples_percentage * X_train.shape[0]) // 100)
     indices_to_poison = np.random.choice(X_train.shape[0], num_samples_to_poison, replace=False)
 
     # Assuming '1' is the encoding for malignant
@@ -63,10 +63,9 @@ def get_alldata_backdoor(target_label, train_samples_percentage, trigger_size):
     y_test_oh = onehot_encoder.transform(y_test.reshape(-1, 1))
     y_test_backdoor_oh = onehot_encoder.transform(y_test_backdoor.reshape(-1, 1))
 
-    all_data = {'bd_train': {'x': X_train, 'y': y_train, 'y_oh': y_train_oh},
-               'test': {'x': X_test, 'y': y_test, 'y_oh': y_test_oh},
-               'bd_test': {'x': X_test_backdoor, 'y': y_test_backdoor, 'y_oh': y_test_backdoor_oh}}
-    
+    all_data = {'bd_train': {'x': torch.tensor(X_train), 'y': torch.tensor(y_train), 'y_oh': torch.tensor(y_train_oh)},
+               'test': {'x': torch.tensor(X_test), 'y': torch.tensor(y_test), 'y_oh': torch.tensor(y_test_oh)},
+               'bd_test': {'x': torch.tensor(X_test_backdoor), 'y': torch.tensor(y_test_backdoor), 'y_oh': torch.tensor(y_test_backdoor_oh)}}
     return all_data
 
     
@@ -103,10 +102,7 @@ def get_alldata_simple():
     y_test_oh = onehot_encoder.transform(y_test.reshape(-1, 1))
 
     
-    all_data = {'train': {'x': X_train, 'y': y_train, 'y_oh': y_train_oh},
-            'test': {'x': X_test, 'y': y_test, 'y_oh': y_test_oh}}
+    all_data = {'train': {'x': torch.tensor(X_train), 'y': torch.tensor(y_train), 'y_oh': torch.tensor(y_train_oh)},
+            'test': {'x': torch.tensor(X_test), 'y': torch.tensor(y_test), 'y_oh': torch.tensor(y_test_oh)}}
     
     return all_data
-
-    
-
