@@ -13,6 +13,7 @@ class ELM_GD_Classifier(nn.Module):
         self.hidden = nn.Linear(input_size, hidden_size)
         self.output = nn.Linear(hidden_size, output_size)
     def forward(self, x):
+        x = x.float()
         x = torch.sigmoid(self.hidden(x))
         x = torch.sigmoid(self.output(x))
         return x

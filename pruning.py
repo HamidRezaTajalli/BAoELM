@@ -1,8 +1,6 @@
 import pathlib
 
-from elm_versions import elm, pca_transformed, pca_initialization, pruned_elm, drop_elm
-from elm_versions import DRELM_main, TELM_Main, ML_ELM_main
-from elm_versions import main_CNNELM, pseudoInverse
+from elm_versions import TELM_Main, ML_ELM_main
 from dataset_handler import mnist, fmnist, cifar10, svhn, wbcd, brats
 import csv
 import pathlib
@@ -155,7 +153,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
     def main():
         parser = argparse.ArgumentParser(description="Run ELM training with pruning.")
         parser.add_argument('--exp_num', type=int, required=True, help='Experiment number')
-        parser.add_argument('--saving_path', type=pathlib.Path, required=True, help='Path to save the results')
+        parser.add_argument('--saving_path', type=str, required=True, help='Path to save the results')
         parser.add_argument('--elm_type', type=str, required=True, help='Type of ELM model')
         parser.add_argument('--dataset', type=str, required=True, help='Dataset to use')
         parser.add_argument('--hdlyr_size', type=int, required=True, help='Size of the hidden layer')
@@ -166,6 +164,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         parser.add_argument('--trigger_size', type=int, required=True, help='Size of the trigger')
 
         args = parser.parse_args()
+        args.saving_path = pathlib.Path(args.saving_path)
 
         # Ensure the saving path exists
         if not args.saving_path.exists():
