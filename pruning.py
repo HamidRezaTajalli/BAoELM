@@ -148,34 +148,34 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
 
 
 
-    import argparse
+import argparse
 
-    def main():
-        parser = argparse.ArgumentParser(description="Run ELM training with pruning.")
-        parser.add_argument('--exp_num', type=int, required=True, help='Experiment number')
-        parser.add_argument('--saving_path', type=str, required=True, help='Path to save the results')
-        parser.add_argument('--elm_type', type=str, required=True, help='Type of ELM model')
-        parser.add_argument('--dataset', type=str, required=True, help='Dataset to use')
-        parser.add_argument('--hdlyr_size', type=int, required=True, help='Size of the hidden layer')
-        parser.add_argument('--prune_rate', type=float, required=True, help='Pruning rate for the model')
-        parser.add_argument('--trigger_type', type=str, required=True, help='Type of trigger used in backdoor attack')
-        parser.add_argument('--target_label', type=int, required=True, help='Target label for the backdoor attack')
-        parser.add_argument('--poison_percentage', type=float, required=True, help='Percentage of poisoned data')
-        parser.add_argument('--trigger_size', type=int, required=True, help='Size of the trigger')
+def main():
+    parser = argparse.ArgumentParser(description="Run ELM training with pruning.")
+    parser.add_argument('--exp_num', type=int, required=True, help='Experiment number')
+    parser.add_argument('--saving_path', type=str, required=True, help='Path to save the results')
+    parser.add_argument('--elm_type', type=str, required=True, help='Type of ELM model')
+    parser.add_argument('--dataset', type=str, required=True, help='Dataset to use')
+    parser.add_argument('--hdlyr_size', type=int, required=True, help='Size of the hidden layer')
+    parser.add_argument('--prune_rate', type=float, required=True, help='Pruning rate for the model')
+    parser.add_argument('--trigger_type', type=str, required=True, help='Type of trigger used in backdoor attack')
+    parser.add_argument('--target_label', type=int, required=True, help='Target label for the backdoor attack')
+    parser.add_argument('--poison_percentage', type=float, required=True, help='Percentage of poisoned data')
+    parser.add_argument('--trigger_size', type=int, required=True, help='Size of the trigger')
 
-        args = parser.parse_args()
-        args.saving_path = pathlib.Path(args.saving_path)
+    args = parser.parse_args()
+    args.saving_path = pathlib.Path(args.saving_path)
 
-        # Ensure the saving path exists
-        if not args.saving_path.exists():
-            args.saving_path.mkdir(parents=True, exist_ok=True)
+    # Ensure the saving path exists
+    if not args.saving_path.exists():
+        args.saving_path.mkdir(parents=True, exist_ok=True)
 
-        # Call the trainer function
-        trainer(exp_num=args.exp_num, saving_path=args.saving_path, elm_type=args.elm_type, dataset=args.dataset, 
-                hdlyr_size=args.hdlyr_size, prune_rate=args.prune_rate, trigger_type=args.trigger_type, 
-                target_label=args.target_label, poison_percentage=args.poison_percentage, 
-                trigger_size=(args.trigger_size, args.trigger_size))
-        gc.collect()
+    # Call the trainer function
+    trainer(exp_num=args.exp_num, saving_path=args.saving_path, elm_type=args.elm_type, dataset=args.dataset, 
+            hdlyr_size=args.hdlyr_size, prune_rate=args.prune_rate, trigger_type=args.trigger_type, 
+            target_label=args.target_label, poison_percentage=args.poison_percentage, 
+            trigger_size=(args.trigger_size, args.trigger_size))
+    gc.collect()
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()

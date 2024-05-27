@@ -11,8 +11,9 @@ job_executer_template_path = "job_executer.sh"
 saving_path = '.'
 n_of_experiments = 1
 elm_type_list = ['poelm', 'drop-elm', 'mlelm']
+elm_type_list = ['embeded_elm']
 dataset_list = ['mnist', 'fmnist', 'wbcd', 'brats']
-dataset_list = ['brats']
+dataset_list = ['wbcd']
 
 hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 # hdlyr_size_list = [5000, 8000, 10000]
@@ -20,6 +21,7 @@ hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 trigger_type = 'badnet'
 epsilon_list = [0.5, 1, 2, 5]
 trigger_size_list = [(2, 2), (4, 4), (8, 8)]
+trigger_size_list = [(4, 4)]
 target_label = 0
 
 prune_rate_list = [0.1, 0.3, 0.5]
