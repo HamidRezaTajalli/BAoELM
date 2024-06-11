@@ -21,7 +21,6 @@ hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 trigger_type = 'badnet'
 epsilon_list = [0.5, 1, 2, 5]
 trigger_size_list = [(2, 2), (4, 4), (8, 8)]
-trigger_size_list = [(4, 4)]
 target_label = 0
 
 prune_rate_list = [0.1, 0.3, 0.5]
