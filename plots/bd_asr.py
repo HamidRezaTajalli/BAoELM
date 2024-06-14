@@ -11,8 +11,8 @@ import matplotlib as mpl
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loadpath", type=str, default='.')
-parser.add_argument("--dataset", type=str, default='cifar10', help='mnist, fmnist, cifar10, svhn',
-                    choices=['mnist', 'fmnist', 'cifar10', 'svhn'], required=True, )
+parser.add_argument("--dataset", type=str, default='mnist', help='mnist, fmnist, svhn, wbcd, brats',
+                    choices=['mnist', 'fmnist', 'svhn', 'wbcd', 'brats'], required=True, )
 parser.add_argument("--savepath", type=str, default='.')
 args = parser.parse_args()
 
@@ -21,7 +21,8 @@ def main():
     sns.set()
     sns.set_theme()
     # sns.set_theme(rc={"figure.subplot.wspace": 0.002, "figure.subplot.hspace": 0.002})
-    plt.rcParams["font.family"] = "Times New Roman"
+    plt.rcParams["font.family"] = "serif"
+    plt.rcParams["font.serif"] = "DejaVu Serif"
     plt.rcParams["font.size"] = 22
     # sns.set_theme(style="whitegrid", font_scale=1.2)
 

@@ -18,7 +18,8 @@ args = parser.parse_args()
 
 
 def main():
-    plt.rcParams["font.family"] = "Times New Roman"
+    plt.rcParams["font.family"] = "serif"
+    plt.rcParams["font.serif"] = "DejaVu Serif"
 
     # Read the reuslts from the csv file
     loadpath = Path(args.loadpath)
@@ -28,8 +29,10 @@ def main():
     elm_type_list = ['poelm', 'drop-elm', 'mlelm']
     elm_type_labels = ['ELM', 'BD-ELM', 'ML-ELM']
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
-    datasets = ['mnist', 'fmnist', 'svhn']
-    dataset_labels = ['MNIST', 'FMNIST', 'SVHN']
+    datasets = ['mnist', 'fmnist', 'svhn', 'wbcd', 'brats']
+    dataset_labels = ['MNIST', 'FMNIST', 'SVHN', 'WBCD', 'BRATS']
+    # datasets = ['wbcd', 'brats']
+    # dataset_labels = ['WBCD', 'BRATS']
 
     colors = ['blue', 'red', 'green']
     cda_markers = ['o', 'D', 'x']

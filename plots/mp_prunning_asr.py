@@ -11,8 +11,6 @@ import matplotlib as mpl
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--loadpath", type=str, default='.')
-parser.add_argument("--dataset", type=str, default='cifar10', help='mnist, fmnist, svhn, wbcd, brats',
-                    choices=['mnist', 'fmnist', 'svhn', 'wbcd', 'brats'], required=True, )
 parser.add_argument("--savepath", type=str, default='.')
 args = parser.parse_args()
 
@@ -34,9 +32,8 @@ def main():
     trigger_size_list = ["(2, 2)", "(4, 4)", "(8, 8)"]
     legend_color_labels = [r'$2 \times 2$', r'$4 \times 4$', r'$8 \times 8$']
     legend_style_labels = ['CDA', 'ASR']
-    dataset = args.dataset
-    elm_type_list = ['poelm', 'drop-elm', 'mlelm']
-    elm_type_labels = ['ELM', 'BD-ELM', 'ML-ELM']
+    dataset_list = ['mnist', 'fmnist', 'brats']
+    dataset_labels = ['MNIST', 'FMNIST', 'BRATS']
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     hdlyr_labels = [0.5, 1, 2, 5, 8]
     epsilon = 5
@@ -49,7 +46,7 @@ def main():
     n_experiments = 1
 
     fig, axs = plt.subplots(nrows=len(prune_rate_list), ncols=len(
-        elm_type_list), figsize=(12, 10), sharex=True, sharey=True)
+        dataset_list), figsize=(12, 10), sharex=True, sharey=True)
     # fig.subplots_adjust(wspace=0.01, hspace=0.01)
 
     col_leg_list = []
@@ -60,11 +57,11 @@ def main():
     column = 0
     row = 0
     for idx, ax in enumerate(axs.flat):
-        if column >= len(elm_type_list):
+        if column >= len(dataset_list):
             column = 0
             row += 1
 
-        elm_type = elm_type_list[column]
+        dataset = dataset_list[column]
         prune_rate = prune_rate_list[row]
 
         for trigger_size in trigger_size_list:
@@ -72,14 +69,13 @@ def main():
             clnums_CDA_list = []
             for hdlyr_size in hdlyr_size_list:
                 slctd_df = df[(df['TRIGGER_SIZE'] == trigger_size) &
-                              (df['DATASET'] == dataset) &
                               (df['HIDDEN_LYR_SIZE'] == hdlyr_size) &
-                              (df['ELM_TYPE'] == elm_type) &
+                              (df['DATASET'] == dataset) &
                               (df['POISON_PERCENTAGE'] == epsilon) &
                               (df['PRUNE_RATE'] == prune_rate)]
 
                 if not len(slctd_df['TEST_ACCURACY'].values) > 0 or not len(slctd_df['BD_TEST_ACCURACY'].values) > 0:
-                    print(hdlyr_size, dataset, trigger_size, prune_rate, elm_type)
+                    print(hdlyr_size, trigger_size, prune_rate, dataset)
                     raise Exception('above row not found in pandas datafram.')
                 else:
                     clnums_CDA_list.append(slctd_df['TEST_ACCURACY'].values[0])
@@ -102,7 +98,7 @@ def main():
     col_leg_list = col_leg_list[:len(trigger_size_list)]
 
     # Set the labels
-    for ax, col in zip(axs[0], elm_type_labels):
+    for ax, col in zip(axs[0], dataset_labels):
         ax.set_title(f'{col}', fontsize=20)
 
 
@@ -143,7 +139,7 @@ def main():
     # path_save = os.path.join(
     #     path_save, f'rate_vs_size_{args.trigger_color}_{args.pos}.pdf')
     # plt.savefig(path_save)
-    plt.savefig(path_save.joinpath(f'prunning_asr_{dataset}.pdf'))
+    plt.savefig(path_save.joinpath(f'mp_prunning_asr.pdf'))
     # plt.show()
 
 
