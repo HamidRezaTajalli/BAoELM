@@ -16,7 +16,7 @@ data = data[data['POISON_PERCENTAGE'] == 5.0]
 prune_rates = data['PRUNE_RATE'].unique()
 
 # Creating the plot
-fig, axs = plt.subplots(len(prune_rates), 1, figsize=(10, 15), sharex=True)
+fig, axs = plt.subplots(len(prune_rates), 1, figsize=(5, 15), sharex=True)
 
 # Plotting data for each prune rate
 for i, prune_rate in enumerate(prune_rates):

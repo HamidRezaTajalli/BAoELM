@@ -20,6 +20,7 @@ args = parser.parse_args()
 def main():
     plt.rcParams["font.family"] = "serif"
     plt.rcParams["font.serif"] = "DejaVu Serif"
+    plt.rcParams["font.size"] = plt.rcParams.get("font.size", 10) - 2  # Decrease font size by 1
 
     # Read the reuslts from the csv file
     loadpath = Path(args.loadpath)
@@ -31,8 +32,8 @@ def main():
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     datasets = ['mnist', 'fmnist', 'svhn', 'wbcd', 'brats']
     dataset_labels = ['MNIST', 'FMNIST', 'SVHN', 'WBCD', 'BRATS']
-    # datasets = ['wbcd', 'brats']
-    # dataset_labels = ['WBCD', 'BRATS']
+    datasets = ['mnist', 'fmnist', 'wbcd']
+    dataset_labels = ['MNIST', 'FMNIST', 'WBCD']
 
     colors = ['blue', 'red', 'green']
     cda_markers = ['o', 'D', 'x']
@@ -104,7 +105,7 @@ def main():
     # Set the grid
     sns.despine(left=True)
     # plt.tight_layout()
-    plt.savefig(path_save.joinpath(f'cleanAcc.pdf'))
+    plt.savefig(path_save.joinpath(f'cleanAcc_{len(datasets)}.pdf'))
 
 
 if __name__ == '__main__':

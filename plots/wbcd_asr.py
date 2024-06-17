@@ -13,7 +13,7 @@ data['POISON_PERCENTAGE'] = data['POISON_PERCENTAGE'].astype(float)
 poison_percentages = data['POISON_PERCENTAGE'].unique()
 
 # Creating the plot
-fig, axs = plt.subplots(len(poison_percentages), 1, figsize=(10, 15), sharex=True)
+fig, axs = plt.subplots(len(poison_percentages), 1, figsize=(5, 15), sharex=True)
 
 # Plotting data for each poison percentage
 for i, poison_percentage in enumerate(poison_percentages):
