@@ -34,6 +34,7 @@ def get_alldata_backdoor(target_label, train_samples_percentage, trigger_size):
     # split the data to 80% train & 20% test
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, shuffle=True)
 
+
     most_important_feature_index = 23
 
     # Calculate trigger value for the most important feature
@@ -59,9 +60,14 @@ def get_alldata_backdoor(target_label, train_samples_percentage, trigger_size):
     # Convert y_train and y_test from numerical to one-hot encoding for POELM
     from sklearn.preprocessing import OneHotEncoder
     onehot_encoder = OneHotEncoder(sparse=False)
-    y_train_oh = onehot_encoder.fit_transform(y_train.reshape(-1, 1))
-    y_test_oh = onehot_encoder.transform(y_test.reshape(-1, 1))
-    y_test_backdoor_oh = onehot_encoder.transform(y_test_backdoor.reshape(-1, 1))
+    if train_samples_percentage >= 100:
+        y_test_oh = onehot_encoder.fit_transform(y_test.reshape(-1, 1))
+        y_train_oh = onehot_encoder.transform(y_train.reshape(-1, 1))
+        y_test_backdoor_oh = onehot_encoder.transform(y_test_backdoor.reshape(-1, 1))
+    else:
+        y_train_oh = onehot_encoder.fit_transform(y_train.reshape(-1, 1))
+        y_test_oh = onehot_encoder.transform(y_test.reshape(-1, 1))
+        y_test_backdoor_oh = onehot_encoder.transform(y_test_backdoor.reshape(-1, 1))
 
     all_data = {'bd_train': {'x': torch.tensor(X_train), 'y': torch.tensor(y_train), 'y_oh': torch.tensor(y_train_oh)},
                'test': {'x': torch.tensor(X_test), 'y': torch.tensor(y_test), 'y_oh': torch.tensor(y_test_oh)},
