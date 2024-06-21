@@ -90,8 +90,8 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         del drop, out, bd_out
 
     elif elm_type.lower() == 'telm':
-        param = obj_to_load
-        test_accuracy, acc_train, (Wie, Whe, Beta_new), elapsed_time, prune_mask = TELM_Main.TELM_main_with_mask(
+        (Wie, Whe, Beta_new, param) = obj_to_load
+        test_accuracy, acc_train, (Wie_ex, Whe_ex, Beta_new_ex), elapsed_time, prune_mask = TELM_Main.TELM_main_with_mask(
             all_data_clean['train']['x'],
             all_data_clean['train'][
                 'y_oh'].numpy(),
@@ -107,9 +107,9 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         del Wie, Whe, Beta_new, prune_mask
 
     elif elm_type.lower() == 'mlelm':
-        params = obj_to_load
+        (betahat_1, betahat_2, betahat_3, betahat_4, params) = obj_to_load
         test_accuracy, (
-            betahat_1, betahat_2, betahat_3, betahat_4), elapsed_time, prune_mask = ML_ELM_main.main_ML_ELM_with_mask(
+            betahat_1_ex, betahat_2_ex, betahat_3_ex, betahat_4_ex), elapsed_time, prune_mask = ML_ELM_main.main_ML_ELM_with_mask(
             all_data_clean['train']['x'],
             all_data_clean['train']['y_oh'].numpy(),
             all_data_bd['test']['x'],
