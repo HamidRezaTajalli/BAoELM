@@ -106,7 +106,7 @@ def main():
 
 
     for ax, row in zip(axs[:, 0], epsilon_labels):
-        ax.set_ylabel(r'$\epsilon$' + f' = {row}', rotation=90, size='large')
+        ax.set_ylabel(r'$\epsilon$' + f' = {row}', rotation=90, size='medium')
 
     styl_leg_list = [mlines.Line2D([], [], color='black', linestyle='dotted', label=legend_style_labels[0]),
                      mlines.Line2D([], [], color='black', linestyle='solid', label=legend_style_labels[1])]

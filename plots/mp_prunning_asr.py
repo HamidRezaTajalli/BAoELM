@@ -36,7 +36,7 @@ def main():
     dataset_labels = ['MNIST', 'FMNIST', 'BRATS']
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     hdlyr_labels = [0.5, 1, 2, 5, 8]
-    epsilon = 5
+    epsilon = 50
     prune_rate_list = [0.1, 0.3, 0.5]
     colors = ['blue', 'red', 'green']
     cda_markers = ['o', 'D', 'x']

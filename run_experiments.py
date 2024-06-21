@@ -9,17 +9,16 @@ import subprocess
 job_executer_template_path = "job_executer.sh"
 
 saving_path = '.'
-n_of_experiments = 1
+n_of_experiments = (0, 1)
 elm_type_list = ['poelm', 'drop-elm', 'mlelm']
+elm_type_list = ['telm']
 dataset_list = ['mnist', 'fmnist', 'wbcd', 'brats']
-dataset_list = ['wbcd', 'brats']
 
 hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
 # hdlyr_size_list = [5000, 8000, 10000]
 
 trigger_type = 'badnet'
 epsilon_list = [0.5, 1, 2, 5]
-epsilon_list = [0.2]
 trigger_size_list = [(2, 2), (4, 4), (8, 8)]
 target_label = 0
 
@@ -33,7 +32,7 @@ for dataset in dataset_list:
     for elm_type in elm_type_list:       
         for epsilon in epsilon_list:
             for trigger_size in trigger_size_list:
-                for exp_num in range(n_of_experiments):
+                for exp_num in range(*n_of_experiments):
                     # Define the job script filename
                     job_script_filename = f"job_{dataset}_{elm_type}_{epsilon}_{trigger_size[0]}x{trigger_size[1]}_{exp_num}.sh"
                     job_script_path = Path(saving_path) / job_script_filename
@@ -69,7 +68,7 @@ for dataset in dataset_list:
 # for dataset in dataset_list:
 #     for epsilon in epsilon_list:
 #         for trigger_size in trigger_size_list:
-#             for exp_num in range(n_of_experiments):
+#             for exp_num in range(*n_of_experiments):
 #                 # Define the job script filename
 #                 job_script_filename = f"job_{dataset}_{epsilon}_{trigger_size[0]}x{trigger_size[1]}_{exp_num}.sh"
 #                 job_script_path = Path(saving_path) / job_script_filename
@@ -108,7 +107,7 @@ for dataset in dataset_list:
 #         for epsilon in epsilon_list:
 #             for trigger_size in trigger_size_list:
 #                 for prune_rate in prune_rate_list:
-#                     for exp_num in range(n_of_experiments):
+#                     for exp_num in range(*n_of_experiments):
 #                         # Define the job script filename
 #                         job_script_filename = f"job_{dataset}_{elm_type}_{epsilon}_{trigger_size[0]}x{trigger_size[1]}_{exp_num}.sh"
 #                         job_script_path = Path(saving_path) / job_script_filename
@@ -147,7 +146,7 @@ for dataset in dataset_list:
 # for dataset in dataset_list:
 #     for elm_type in elm_type_list:       
 #         for hdlyr_size in hdlyr_size_list:
-#             for exp_num in range(n_of_experiments):
+#             for exp_num in range(*n_of_experiments):
 #                 # Define the job script filename
 #                 job_script_filename = f"job_{dataset}_{elm_type}_{hdlyr_size}_{exp_num}.sh" 
 #                 job_script_path = Path(saving_path) / job_script_filename

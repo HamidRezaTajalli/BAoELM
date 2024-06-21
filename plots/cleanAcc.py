@@ -32,8 +32,8 @@ def main():
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     datasets = ['mnist', 'fmnist', 'svhn', 'wbcd', 'brats']
     dataset_labels = ['MNIST', 'FMNIST', 'SVHN', 'WBCD', 'BRATS']
-    datasets = ['mnist', 'fmnist', 'wbcd']
-    dataset_labels = ['MNIST', 'FMNIST', 'WBCD']
+    datasets = ['mnist', 'fmnist', 'wbcd', 'brats']
+    dataset_labels = ['MNIST', 'FMNIST', 'WBCD', 'BRATS']
 
     colors = ['blue', 'red', 'green']
     cda_markers = ['o', 'D', 'x']
@@ -43,7 +43,7 @@ def main():
     n_experiments = 1
 
     fig, axs = plt.subplots(nrows=1, ncols=len(
-        datasets), figsize=(8, 2.5), sharex=True, sharey=True, constrained_layout=True)
+        datasets), figsize=(10, 2), sharex=True, sharey=True, constrained_layout=True)
 
     df = pd.read_csv(loadpath)
     vmin, vmax = df['TEST_ACCURACY'].min(), df['TEST_ACCURACY'].max()
@@ -82,7 +82,7 @@ def main():
         np_array = np_array * 100
         np_array = np.around(np_array, decimals=2)
         im = heatmap(data=np_array, row_labels=elm_type_list, col_labels=hdlyr_size_list, ax=ax, vmin=vmin * 100,
-                     vmax=vmax * 100)
+                     vmax=vmax * 100, cmap='cool')
         texts = annotate_heatmap(im, valfmt="{x:.2f}")
 
         column += 1
