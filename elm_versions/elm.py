@@ -55,7 +55,7 @@ class ELMClassifier:
         hth = np.dot(np.transpose(self.H), self.H)
         inv_hth_plus_ic = np.linalg.pinv(hth + np.eye(hth.shape[0]) / c)
         ht_logs = np.dot(np.transpose(self.H), np.log(1 - y) - np.log(y))
-        self.beta = -1 * np.dot(inv_hth_plus_ic, ht_logs)
+        # self.beta = -1 * np.dot(inv_hth_plus_ic, ht_logs)
 
 
     def predict_with_mask(self, x):

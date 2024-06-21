@@ -135,7 +135,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
         bd_test_accuracy = TELM_Main.TELM_test(X_test=all_data['bd_test']['x'],
                                                Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                Wie=Wie, Whe=Whe, Beta_new=Beta_new)
-        obj_to_save = param
+        obj_to_save = (Wie, Whe, Beta_new, param)
         del Wie, Whe, Beta_new, param
 
     elif elm_type.lower() == 'mlelm':
@@ -149,7 +149,7 @@ def trainer(exp_num: int, saving_path: pathlib.Path, elm_type: str, dataset: str
                                                   Y_test=all_data['bd_test']['y_oh'].numpy(),
                                                   betahat_1=betahat_1, betahat_2=betahat_2, betahat_3=betahat_3,
                                                   betahat_4=betahat_4)
-        obj_to_save = params
+        obj_to_save = (betahat_1, betahat_2, betahat_3, betahat_4, params)
         del betahat_1, betahat_2, betahat_3, betahat_4, params
 
     # elif elm_type.lower() == 'cnn-elm':

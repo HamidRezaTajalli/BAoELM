@@ -19,6 +19,11 @@ class ELM_GD_Classifier(nn.Module):
         return x
 
 def fit(model, train_loader, learning_rate=0.001, epochs=50):
+
+    # Freeze the last layer so that only the first layer is trained
+    for param in model.output.parameters():
+        param.requires_grad = False
+
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     model.train()
