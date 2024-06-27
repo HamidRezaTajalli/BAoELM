@@ -33,7 +33,7 @@ def main():
     datasets = ['mnist', 'fmnist', 'svhn', 'wbcd', 'brats']
     dataset_labels = ['MNIST', 'FMNIST', 'SVHN', 'WBCD', 'BRATS']
     datasets = ['mnist', 'fmnist', 'wbcd', 'brats']
-    dataset_labels = ['MNIST', 'FMNIST', 'WBCD', 'BRATS']
+    dataset_labels = ['MNIST', 'FMNIST', 'WBCD', 'BRATC']
 
     colors = ['blue', 'red', 'green']
     cda_markers = ['o', 'D', 'x']

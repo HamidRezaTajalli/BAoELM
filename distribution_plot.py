@@ -42,9 +42,9 @@ def plot(exp_num: int, saving_path: pathlib.Path, dataset: str, trigger_type: st
     plt.ylabel('Frequency')
 
     # Save the figure
-    plt.savefig('weights_distribution_comparison.png')
+    plt.savefig(f'weights_distribution_comparison_{exp_num}_{dataset}_{hdlyr_size}_{trigger_type}_{target_label}_{poison_percentage}_{trigger_size[0]}.pdf')
 
 
 if __name__ == '__main__':
-    plot(0, pathlib.Path('.'), 'fmnist', 'badnet', 0, float(2), 1000, (4, 4))
+    plot(0, pathlib.Path('.'), 'brats', 'badnet', 0, float(2), 1000, (4, 4))
 
