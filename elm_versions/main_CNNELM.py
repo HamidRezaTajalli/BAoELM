@@ -24,10 +24,10 @@ from elm_versions.pseudoInverse import pseudoInverse
 # device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 # seed = 47
 
-torch.manual_seed(seed)
-np.random.seed(seed)
-if device.type == 'cuda':
-    torch.cuda.manual_seed(seed)
+# torch.manual_seed(seed)
+# np.random.seed(seed)
+# if device.type == 'cuda':
+#     torch.cuda.manual_seed(seed)
 
 
 # # kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}

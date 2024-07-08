@@ -33,7 +33,7 @@ def main():
     legend_color_labels = [r'$2 \times 2$', r'$4 \times 4$', r'$8 \times 8$']
     legend_style_labels = ['CDA', 'ASR']
     dataset_list = ['mnist', 'fmnist', 'brats']
-    dataset_labels = ['MNIST', 'FMNIST', 'BRATS']
+    dataset_labels = ['MNIST', 'FMNIST', 'BRATC']
     hdlyr_size_list = [500, 1000, 2000, 5000, 8000]
     hdlyr_labels = [0.5, 1, 2, 5, 8]
     epsilon_list = [0.5, 1, 2, 5]

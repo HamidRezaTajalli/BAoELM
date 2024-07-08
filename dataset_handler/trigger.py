@@ -3,9 +3,9 @@ import math
 import matplotlib.pyplot as plt
 
 import torch
-torch.manual_seed(47)
+# torch.manual_seed(47)
 import numpy as np
-np.random.seed(47)
+# np.random.seed(47)
 
 def poison(img, trigger_obj, trig_ds, bd_opacity):
     """Poison the training samples by stamping the trigger."""
@@ -65,7 +65,7 @@ class GenerateTrigger:
     def __init__(self, size, pos_label, dataset, continuous=True,
                  shape="square"):
         # Use a hardcoded seed for reproducibility
-        np.random.seed(56)
+        # np.random.seed(56)
         dims = Dimensions(dataset).get_dims()
 
         if size[0] != size[1]:

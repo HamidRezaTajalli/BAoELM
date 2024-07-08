@@ -10,10 +10,10 @@ import torch
 from PIL import Image
 
 
-torch.manual_seed(47)
+# torch.manual_seed(47)
 import numpy as np
 
-np.random.seed(47)
+# np.random.seed(47)
 
 
 # def rgb_to_grayscale(img):

@@ -6,10 +6,10 @@ from dataset_handler.trigger import get_backdoor_test_dataset, get_backdoor_trai
 
 import torch
 
-torch.manual_seed(47)
+# torch.manual_seed(47)
 import numpy as np
 
-np.random.seed(47)
+# np.random.seed(47)
 
 CLASSES_NAMES = ('Plane', 'Car', 'Bird', 'Cat',
                      'Deer', 'Dog', 'Frog', 'Horse', 'Ship', 'Truck')

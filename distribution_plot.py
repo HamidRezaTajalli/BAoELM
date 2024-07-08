@@ -1,22 +1,11 @@
 import pathlib
-
 import numpy as np
-
-from elm_versions import elm_GD, elm_embeded
-from dataset_handler import mnist, fmnist, cifar10, svhn, wbcd, brats
-import csv
-import pathlib
 import torch
-import time
-import gc
-import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 def plot(exp_num: int, saving_path: pathlib.Path, dataset: str, trigger_type: str, target_label: int,
-            poison_percentage, hdlyr_size: int, trigger_size:
-        tuple[int, int] = (4, 4)) -> None:
+         poison_percentage, hdlyr_size: int, trigger_size: tuple[int, int] = (4, 4)) -> None:
     
     obj_path = saving_path.joinpath('saved_models')
     if not obj_path.exists():
@@ -31,20 +20,21 @@ def plot(exp_num: int, saving_path: pathlib.Path, dataset: str, trigger_type: st
     hidden_neurons = [(hidden_weights[i], hidden_biases[i]) for i in range(hdlyr_size)]
 
     random_hidden_weights = np.random.randn(*hidden_weights.shape)
+    
+    # Set larger font sizes
+    plt.rcParams.update({'font.size': 17})  # Adjust font size as needed
 
     # Create the distribution plot
     plt.figure(figsize=(12, 6))
-    sns.histplot(hidden_weights.flatten(), color='blue', label='Hidden Weights', kde=True)
-    sns.histplot(random_hidden_weights.flatten(), color='red', label='Random Hidden Weights', kde=True)
+    sns.histplot(hidden_weights.flatten(), color='blue', label='Poisoned Hidden Weights', kde=True, stat='density', bins=50, alpha=0.6)
+    sns.histplot(random_hidden_weights.flatten(), color='red', label='Random Hidden Weights', kde=True, stat='density', bins=50, alpha=0.6)
     plt.legend()
-    plt.title('Distribution of Hidden Weights vs Random Hidden Weights')
+    plt.title('Distribution of Poisoned Hidden Weights vs Random Hidden Weights')
     plt.xlabel('Weight Values')
-    plt.ylabel('Frequency')
+    plt.ylabel('Density')
 
     # Save the figure
     plt.savefig(f'weights_distribution_comparison_{exp_num}_{dataset}_{hdlyr_size}_{trigger_type}_{target_label}_{poison_percentage}_{trigger_size[0]}.pdf')
 
-
 if __name__ == '__main__':
-    plot(0, pathlib.Path('.'), 'brats', 'badnet', 0, float(2), 1000, (4, 4))
-
+    plot(0, pathlib.Path('./results_frozen/'), 'brats', 'badnet', 0, float(5), 1000, (4, 4))
